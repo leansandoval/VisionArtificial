@@ -1,0 +1,18 @@
+Camera:
+  color_order: BGR
+  cols: 1536
+  cx: 778.9840502301511
+  cy: 998.6388878006551
+  fps: 30
+  fx: 1672.6033923902432
+  fy: 1677.7218280454083
+  k1: 0.3318387866906574
+  k2: -2.477237962742525
+  k3: 3.825740099883346
+  model: perspective
+  name: Mi camara calibrada
+  p1: -0.005604694720290784
+  p2: -0.005746352436283344
+  rows: 2048
+  setup: monocular
+Mapping: {}

@@ -1,0 +1,17 @@
+# Trabajo Práctico 3
+
+## Instrucciones
+
+Se siguieron los pasos como indica el  [README de Stella Vslam](https://github.com/UNSLAM25/stella_vslam/blob/main/build-docker.md).
+
+## Calibración de la Cámara
+
+Se utilizaron 15 fotos sacadas del celular y se corrio el script `calibrar_camara.py`. Este script procesa cada imagen tomada y genera el archivo de configuracion que servira para el sistema.
+
+## Ejecucion de la imágen una vez creada
+
+`docker run -it --rm --privileged --name unslam-cont -p 8000:8000 -p 8765:8765 -e DISPLAY=192.168.1.34:0.0 -v "C:\Users\Lenovo\OneDrive\Escritorio\stella_vslam\vslam-backend\vslam\config.yaml:/stella_vslam/vslam-backend/config.yaml" unslam`
+
+## Imagen Docker
+
+También se encuentra la imágen para descargar directamente y no buildear.
