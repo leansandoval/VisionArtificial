@@ -8,9 +8,9 @@ Se siguieron los pasos como indica el  [README de Stella Vslam](https://github.c
 
 ## Calibración de la Cámara
 
-Se utilizaron 15 fotos sacadas del celular utilizando un [tablero de ajedrez](https://github.com/leansandoval/VisionArtificial/blob/main/Trabajo%20Pr%C3%A1ctico%203/TableroAjedrezCalibracion.pdf) y se ejecuto el script [`calibrar_camara.py`](https://github.com/leansandoval/VisionArtificial/blob/main/Trabajo%20Pr%C3%A1ctico%203/calibrar_camara.py). Este script procesa cada imágen tomada y genera el [archivo de configuración](https://github.com/leansandoval/VisionArtificial/blob/main/Trabajo%20Pr%C3%A1ctico%203/config_calibracion_20250921_2338.yaml) que servirá para el sistema.
+Se utilizaron 15 fotos sacadas del celular utilizando un [tablero de ajedrez](https://github.com/leansandoval/VisionArtificial/blob/main/Trabajo%20Pr%C3%A1ctico%203/TableroAjedrezCalibracion.pdf) tomado desde distintos angulos y se ejecuto el script [`calibrar_camara.py`](https://github.com/leansandoval/VisionArtificial/blob/main/Trabajo%20Pr%C3%A1ctico%203/calibrar_camara.py). Este script procesa cada imágen tomada y genera el [archivo de configuración](https://github.com/leansandoval/VisionArtificial/blob/main/Trabajo%20Pr%C3%A1ctico%203/config_calibracion_20250921_2338.yaml) que servirá para el sistema.
 
-Al copiarlo a la ruta del repositorio donde se indica renombrarlo como **config.yaml**.
+Al copiarlo a la ruta del repositorio donde se indica renombrar el archivo de configuración como **config.yaml**.
 
 ## Ejecucion de la imágen una vez creada
 
