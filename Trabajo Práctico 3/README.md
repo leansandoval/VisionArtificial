@@ -18,4 +18,4 @@ Al copiarlo a la ruta del repositorio donde se indica renombrar el archivo de co
 
 ## Imagen Docker
 
-También se encuentra la [imágen para descargar](https://github.com/leansandoval/VisionArtificial/blob/main/Trabajo%20Pr%C3%A1ctico%203/unslam.tar) directamente y no buildear.
+También se encuentra la [imagen para descargar](https://github.com/leansandoval/VisionArtificial/blob/main/Trabajo%20Pr%C3%A1ctico%203/unslam.tar) directamente y no buildear.
