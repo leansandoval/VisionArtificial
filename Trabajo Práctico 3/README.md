@@ -6,7 +6,9 @@ Se siguieron los pasos como indica el  [README de Stella Vslam](https://github.c
 
 ## Calibración de la Cámara
 
-Se utilizaron 15 fotos sacadas del celular y se corrio el script `calibrar_camara.py`. Este script procesa cada imagen tomada y genera el archivo de configuracion que servira para el sistema.
+Se utilizaron 15 fotos sacadas del celular y se ejecuto el script `calibrar_camara.py`. Este script procesa cada imágen tomada y genera el archivo de configuración que servirá para el sistema.
+
+Al copiarlo a la ruta del repositorio donde se indica renombrarlo como **config.yaml**.
 
 ## Ejecucion de la imágen una vez creada
 
