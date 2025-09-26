@@ -12,7 +12,7 @@ Se utilizaron 15 fotos sacadas del celular utilizando un [tablero de ajedrez](ht
 
 Al copiarlo a la ruta del repositorio donde se indica renombrar el archivo de configuración como **config.yaml**.
 
-## Ejecución de la imágen una vez creada
+## Ejecución de la imagen una vez creada
 
 `docker run -it --rm --privileged --name unslam-cont -p 8000:8000 -p 8765:8765 -e DISPLAY=<IP_PC>:0.0 -v "<RUTA_DONDE_SE_CLONO_EL_REPOSITORIO>\stella_vslam\vslam-backend\vslam\config.yaml:/stella_vslam/vslam-backend/config.yaml" unslam`
 
