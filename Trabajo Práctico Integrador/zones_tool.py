@@ -134,8 +134,14 @@ def main(source=0, out_path='zones.json'):
             # Guardar zona en progreso si tiene 3+ puntos
             if len(current) >= 3:
                 zm.zones.append(current.copy())
+                # Asegurar que tenemos nombres para todas las zonas
+                while len(zm.zone_names) < len(zm.zones):
+                    zm.zone_names.append(f"Zona {len(zm.zone_names)+1}: Área Restringida")
                 print(f'✓ Zona actual guardada con {len(current)} puntos')
                 current = []
+            # Asegurar que tenemos nombres para todas las zonas existentes
+            while len(zm.zone_names) < len(zm.zones):
+                zm.zone_names.append(f"Zona {len(zm.zone_names)+1}: Área Restringida")
             zm.save()
             print(f'✓✓ Todas las zonas guardadas en {out_path} ({len(zm.zones)} zonas)')
         elif k == 32:  # ESPACIO

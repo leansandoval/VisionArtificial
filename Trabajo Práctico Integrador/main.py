@@ -40,7 +40,7 @@ def main(args):
         print('No se pudo abrir fuente:', args.source)
         return
 
-    win = 'Sistema de Detección de Intrusiones'
+    win = 'Sistema de Deteccion de Intrusiones'
     cv2.namedWindow(win, cv2.WINDOW_NORMAL)
     
     # Stats
@@ -83,9 +83,11 @@ def main(args):
             tracks = tracker.update(dets)
             last_tracks = tracks
 
-        # overlay zones
-        for poly in zones.zones:
-            draw_zone(frame, poly)
+        # overlay zones con nombres personalizados
+        for zone_idx, poly in enumerate(zones.zones):
+            zone_name = zones.get_zone_name(zone_idx)
+            zone_color = (0, 0, 255)  # Rojo por defecto
+            draw_zone(frame, poly, color=zone_color, zone_name=zone_name)
 
         # check tracks against zones
         current_in_zone = set()
@@ -114,12 +116,16 @@ def main(args):
             # Color y label según estado
             if inside:
                 color = (0, 0, 255)  # Rojo si está en zona
-                label = f'Person ID:{bid} [{conf:.2f}] INTRUSION!'
+                label = f'Person ({conf:.2f})'
             else:
                 color = (0, 255, 0)  # Verde si está fuera
-                label = f'Person ID:{bid} [{conf:.2f}]'
+                label = f'Person ({conf:.2f})'
             
             draw_bbox(frame, bbox, label=label, color=color, thickness=2)
+            
+            # Punto de tracking en el centro
+            point_color = (0, 0, 255) if inside else (0, 255, 255)  # Rojo si intrusion, amarillo si seguro
+            draw_tracking_point(frame, (x, y), bid, color=point_color)
             
             # Alerta si está dentro
             if inside:
@@ -128,14 +134,19 @@ def main(args):
 
         tracks_in_zone = current_in_zone
         
-        # Overlay de estadísticas
-        draw_fps(frame, fpsc.fps())
+        # Overlay de estadísticas profesional
+        draw_fps_professional(frame, fpsc.fps(), frame_number=frame_count)
+        
+        # Panel de estadísticas
+        active_zones = sum(1 for _ in zones.zones if len(current_in_zone) > 0)
+        avg_detections = len(tracks)
         stats = {
-            'Personas detectadas': len(tracks),
-            'En zona restringida': len(tracks_in_zone),
-            'Alertas enviadas': total_alerts
+            'Fotograma': frame_count,
+            'Zonas Activas': f'{active_zones}/{len(zones.zones)}',
+            'Total Zonas': len(zones.zones),
+            'Detecciones Prom': f'{avg_detections:.1f}'
         }
-        draw_stats(frame, stats)
+        draw_stats_panel(frame, stats, position='top-right')
         
         cv2.imshow(win, frame)
         k = cv2.waitKey(1) & 0xFF

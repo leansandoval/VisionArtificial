@@ -75,7 +75,31 @@ Parámetros disponibles
 - `--cooldown`: Segundos entre alertas por persona (default: 10)
 - `--use_whatsapp`: Activar envío de WhatsApp via Twilio
 
+Características visuales profesionales
+- ✅ Logo personalizable en esquina superior izquierda
+- ✅ Nombres de zonas editables (editar `zones.json` manualmente)
+- ✅ Puntos de tracking con IDs en el centro de cada persona
+- ✅ Panel de estadísticas estilo dashboard (frame, zonas activas, detecciones)
+- ✅ FPS y contador de frames en tiempo real
+- ✅ Código de colores: verde (seguro) / rojo (intrusión)
+- ✅ Overlay semi-transparente para zonas
+
+Personalización de nombres de zonas
+Edita el archivo `zones.json` manualmente para cambiar nombres:
+```json
+{
+  "zones": [
+    [[x1,y1], [x2,y2], ...]
+  ],
+  "zone_names": [
+    "Zona 1: Entrada Principal",
+    "Zona 2: Estacionamiento"
+  ]
+}
+```
+
 Próximos pasos sugeridos
 - Reemplazar `SimpleTracker` por ByteTrack para mayor robustez.
 - Implementar filtrado geométrico avanzado y conversión de coordenadas multi-cámara.
-- Añadir tests automaticos para detección y lógica de zonas.
+- Añadir grabación de video con timestamps.
+- Dashboard web para monitoreo remoto.

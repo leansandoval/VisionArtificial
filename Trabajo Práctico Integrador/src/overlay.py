@@ -58,7 +58,7 @@ def draw_logo(frame, text="VA", position='top-left'):
     # Fondo negro con borde
     cv2.rectangle(frame, (x-10, y-35), (x+60, y+10), (0,0,0), -1)
     cv2.rectangle(frame, (x-10, y-35), (x+60, y+10), (0,255,0), 2)
-    cv2.putText(frame, text, (x, y), cv2.FONT_HERSHEY_BOLD, 1.2, (0,255,0), 2, cv2.LINE_AA)
+    cv2.putText(frame, text, (x, y), cv2.FONT_HERSHEY_DUPLEX, 1.2, (0,255,0), 2, cv2.LINE_AA)
 
 def draw_fps_professional(frame, fps, frame_number=None):
     """Dibuja FPS y frame number en estilo profesional"""
