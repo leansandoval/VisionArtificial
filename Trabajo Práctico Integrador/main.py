@@ -1,0 +1,165 @@
+"""Demo principal: captura video, detección de personas, tracking simple, zonas y alertas.
+
+Uso mínimo:
+    python main.py --source 0
+    python main.py --source video.mp4 --weights path/to/yolov11.pt
+
+Notas:
+- Proyecto preparado para CPU (no CUDA). Puedes suministrar tus pesos YOLOv11 si los tienes.
+"""
+import argparse
+import cv2
+import os
+import time
+import numpy as np
+
+from src.detector import Detector
+from src.tracker import SimpleTracker
+from src.zones import ZonesManager
+from src.alerts import Alerts
+from src.overlay import (draw_bbox, draw_zone, draw_fps_professional, 
+                         draw_stats_panel, draw_logo, draw_tracking_point)
+from src.utils import FPSCounter
+
+
+def bbox_center(b):
+    x1,y1,x2,y2 = b
+    return int((x1+x2)/2), int((y1+y2)/2)
+
+
+def main(args):
+    det = Detector(weights=args.weights, device='cpu', conf_thres=args.conf, imgsz=args.imgsz)
+    tracker = SimpleTracker(iou_threshold=0.3)
+    zones = ZonesManager(args.zones)
+    zones.load()
+    alerts = Alerts(cooldown_seconds=args.cooldown)
+    fpsc = FPSCounter()
+
+    cap = cv2.VideoCapture(int(args.source) if str(args.source).isdigit() else args.source)
+    if not cap.isOpened():
+        print('No se pudo abrir fuente:', args.source)
+        return
+
+    win = 'Sistema de Detección de Intrusiones'
+    cv2.namedWindow(win, cv2.WINDOW_NORMAL)
+    
+    # Stats
+    total_alerts = 0
+    tracks_in_zone = set()
+    frame_count = 0
+    last_dets = []
+    last_tracks = []
+
+    print('\n' + '='*50)
+    print('SISTEMA DE DETECCIÓN DE INTRUSIONES ACTIVO')
+    print('='*50)
+    print(f'Modelo: {args.weights or "yolov8n.pt (default)"}')
+    print(f'Tamaño de inferencia: {args.imgsz}px')
+    print(f'Skip frames: {args.skip_frames} (0=procesar todos)')
+    print(f'Zonas configuradas: {len(zones.zones)}')
+    print(f'Umbral de confianza: {args.conf}')
+    print(f'Alertas WhatsApp: {"SÍ" if args.use_whatsapp else "NO (solo local)"}')
+    print('Presiona Q o ESC para salir')
+    print('='*50 + '\n')
+
+    while True:
+        ret, frame = cap.read()
+        if not ret:
+            break
+        fpsc.tick()
+        frame_count += 1
+        
+        # Optimización: skip frames para mejorar FPS
+        if args.skip_frames > 0 and frame_count % (args.skip_frames + 1) != 0:
+            # Usar última detección/tracking
+            dets = last_dets
+            tracks = last_tracks
+        else:
+            # detect
+            dets = det.detect(frame)
+            last_dets = dets
+            
+            # tracker
+            tracks = tracker.update(dets)
+            last_tracks = tracks
+
+        # overlay zones
+        for poly in zones.zones:
+            draw_zone(frame, poly)
+
+        # check tracks against zones
+        current_in_zone = set()
+        for i, t in enumerate(tracks):
+            bid = t['track_id']
+            bbox = t['bbox']
+            x, y = bbox_center(bbox)
+            
+            # Buscar confianza en las detecciones originales
+            conf = 0.0
+            for d in dets:
+                db = d['bbox']
+                if abs(db[0]-bbox[0]) < 5 and abs(db[1]-bbox[1]) < 5:  # match aproximado
+                    conf = d['conf']
+                    break
+            
+            # Determinar si está dentro de zona
+            inside = False
+            if zones.zones:
+                for poly in zones.zones:
+                    if cv2.pointPolygonTest(np.array(poly, dtype=np.int32), (int(x), int(y)), False) >= 0:
+                        inside = True
+                        current_in_zone.add(bid)
+                        break
+            
+            # Color y label según estado
+            if inside:
+                color = (0, 0, 255)  # Rojo si está en zona
+                label = f'Person ID:{bid} [{conf:.2f}] INTRUSION!'
+            else:
+                color = (0, 255, 0)  # Verde si está fuera
+                label = f'Person ID:{bid} [{conf:.2f}]'
+            
+            draw_bbox(frame, bbox, label=label, color=color, thickness=2)
+            
+            # Alerta si está dentro
+            if inside:
+                if alerts.alert_for_track(bid, f'⚠️ INTRUSION: Persona {bid} detectada en zona restringida', use_whatsapp=args.use_whatsapp):
+                    total_alerts += 1
+
+        tracks_in_zone = current_in_zone
+        
+        # Overlay de estadísticas
+        draw_fps(frame, fpsc.fps())
+        stats = {
+            'Personas detectadas': len(tracks),
+            'En zona restringida': len(tracks_in_zone),
+            'Alertas enviadas': total_alerts
+        }
+        draw_stats(frame, stats)
+        
+        cv2.imshow(win, frame)
+        k = cv2.waitKey(1) & 0xFF
+        if k == 27 or k == ord('q'):
+            break
+
+    cap.release()
+    cv2.destroyAllWindows()
+    
+    print('\n' + '='*50)
+    print('SISTEMA DETENIDO')
+    print(f'Total de alertas enviadas: {total_alerts}')
+    print('='*50)
+
+
+if __name__ == '__main__':
+    parser = argparse.ArgumentParser()
+    parser.add_argument('--source', default=0, help='Índice de cámara o ruta de video')
+    parser.add_argument('--weights', default=None, help='Ruta a pesos YOLO (ej: yolov11.pt o yolov8n.pt)')
+    parser.add_argument('--zones', default='zones.json', help='Archivo JSON con zonas')
+    parser.add_argument('--conf', type=float, default=0.3, help='Umbral de confianza')
+    parser.add_argument('--cooldown', type=int, default=10, help='Cooldown de alertas por track (s)')
+    parser.add_argument('--use_whatsapp', action='store_true', help='Enviar alerta por WhatsApp via Twilio (requiere env vars)')
+    parser.add_argument('--imgsz', type=int, default=640, help='Tamaño de imagen para inferencia (default: 640, usar 416 o 320 para más FPS)')
+    parser.add_argument('--skip_frames', type=int, default=0, help='Procesar 1 de cada N frames (0=todos, 1=la mitad, 2=un tercio, etc)')
+    args = parser.parse_args()
+    main(args)

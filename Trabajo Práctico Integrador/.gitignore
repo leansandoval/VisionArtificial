@@ -1,0 +1,10 @@
+__pycache__/
+*.pyc
+env/
+venv/
+.vscode/
+*.pth
+*.pth
+*.onnx
+weights/
+secrets.env
