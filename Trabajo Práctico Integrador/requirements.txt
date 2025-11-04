@@ -2,4 +2,5 @@ ultralytics>=8.0.0
 opencv-python
 numpy
 scipy
+supervision>=0.16.0
 # twilio  # Opcional: habilitar Long Path en Windows primero (ver README)

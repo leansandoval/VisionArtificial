@@ -21,6 +21,14 @@ from src.overlay import (draw_bbox, draw_zone, draw_fps_professional,
                          draw_stats_panel, draw_logo, draw_tracking_point)
 from src.utils import FPSCounter
 
+# Importar ByteTrack si está disponible
+try:
+    from src.bytetrack_wrapper import ByteTrackWrapper
+    BYTETRACK_AVAILABLE = True
+except ImportError:
+    BYTETRACK_AVAILABLE = False
+    print('[WARNING] ByteTrack no disponible. Usando SimpleTracker.')
+
 
 def bbox_center(b):
     x1,y1,x2,y2 = b
@@ -29,7 +37,22 @@ def bbox_center(b):
 
 def main(args):
     det = Detector(weights=args.weights, device='cpu', conf_thres=args.conf, imgsz=args.imgsz)
-    tracker = SimpleTracker(iou_threshold=0.3)
+    
+    # Seleccionar tracker según parámetro
+    if args.tracker == 'bytetrack' and BYTETRACK_AVAILABLE:
+        tracker = ByteTrackWrapper(
+            track_activation_threshold=0.25, 
+            lost_track_buffer=30, 
+            minimum_matching_threshold=0.8,
+            frame_rate=30
+        )
+        tracker_name = 'ByteTrack'
+    else:
+        tracker = SimpleTracker(iou_threshold=0.3)
+        tracker_name = 'SimpleTracker'
+        if args.tracker == 'bytetrack' and not BYTETRACK_AVAILABLE:
+            print('[WARNING] ByteTrack solicitado pero no disponible. Usando SimpleTracker.')
+    
     zones = ZonesManager(args.zones)
     zones.load()
     alerts = Alerts(cooldown_seconds=args.cooldown)
@@ -54,6 +77,7 @@ def main(args):
     print('SISTEMA DE DETECCIÓN DE INTRUSIONES ACTIVO')
     print('='*50)
     print(f'Modelo: {args.weights or "yolov8n.pt (default)"}')
+    print(f'Tracker: {tracker_name}')
     print(f'Tamaño de inferencia: {args.imgsz}px')
     print(f'Skip frames: {args.skip_frames} (0=procesar todos)')
     print(f'Zonas configuradas: {len(zones.zones)}')
@@ -172,5 +196,7 @@ if __name__ == '__main__':
     parser.add_argument('--use_whatsapp', action='store_true', help='Enviar alerta por WhatsApp via Twilio (requiere env vars)')
     parser.add_argument('--imgsz', type=int, default=640, help='Tamaño de imagen para inferencia (default: 640, usar 416 o 320 para más FPS)')
     parser.add_argument('--skip_frames', type=int, default=0, help='Procesar 1 de cada N frames (0=todos, 1=la mitad, 2=un tercio, etc)')
+    parser.add_argument('--tracker', default='bytetrack', choices=['simple', 'bytetrack'], 
+                        help='Algoritmo de tracking: simple (IoU básico) o bytetrack (robusto, default)')
     args = parser.parse_args()
     main(args)

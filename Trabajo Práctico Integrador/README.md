@@ -69,6 +69,7 @@ Cómo usar
 Parámetros disponibles
 - `--source`: Cámara (0, 1, 2...) o ruta a video
 - `--weights`: Ruta a pesos YOLO personalizados (default: yolov8n.pt)
+- `--tracker`: Algoritmo de tracking - `bytetrack` (robusto, default) o `simple` (IoU básico)
 - `--conf`: Umbral de confianza (default: 0.3)
 - `--imgsz`: Tamaño de imagen para inferencia - menor = más rápido (default: 640, recomendado 416 para CPU)
 - `--skip_frames`: Procesar 1 de cada N frames (default: 0 = todos, 1 = la mitad, 2 = un tercio)
@@ -98,8 +99,24 @@ Edita el archivo `zones.json` manualmente para cambiar nombres:
 }
 ```
 
+Algoritmos de Tracking
+
+**ByteTrack (default, recomendado)**
+- Tracking robusto de múltiples objetos con persistencia de IDs
+- Mantiene IDs estables incluso con oclusiones o detecciones perdidas
+- Reduce falsos positivos al reasignar IDs correctamente
+- Ideal para producción y entornos con movimientos rápidos
+- Uso: `python main.py --tracker bytetrack` (o sin especificar, es el default)
+
+**SimpleTracker (alternativa básica)**
+- Tracking basado en IoU (Intersection over Union)
+- Más rápido pero menos robusto
+- Puede perder IDs con oclusiones o cambios rápidos
+- Útil para pruebas rápidas o recursos muy limitados
+- Uso: `python main.py --tracker simple`
+
 Próximos pasos sugeridos
-- Reemplazar `SimpleTracker` por ByteTrack para mayor robustez.
-- Implementar filtrado geométrico avanzado y conversión de coordenadas multi-cámara.
-- Añadir grabación de video con timestamps.
-- Dashboard web para monitoreo remoto.
+- ✅ ByteTrack integrado para tracking robusto
+- Implementar filtrado geométrico avanzado y conversión de coordenadas multi-cámara
+- Añadir grabación de video con timestamps
+- Dashboard web para monitoreo remoto
