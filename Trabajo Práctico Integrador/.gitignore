@@ -1,10 +1,27 @@
+# Python
 __pycache__/
 *.pyc
+*.pyo
+*.pyd
+
+# Virtual environments
 env/
 venv/
+.venv/
+
+# IDE
 .vscode/
-*.pth
+.idea/
+
+# Modelos YOLO (se descargan automáticamente)
+*.pt
 *.pth
 *.onnx
 weights/
+
+# Configuración local
+zones.json
 secrets.env
+
+# Logs
+*.log
