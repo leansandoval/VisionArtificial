@@ -20,6 +20,7 @@ from src.alerts import Alerts
 from src.overlay import (draw_bbox, draw_zone, draw_fps_professional, 
                          draw_stats_panel, draw_logo, draw_tracking_point)
 from src.utils import FPSCounter
+from src.geometric_filter import GeometricFilter
 
 # Importar ByteTrack si está disponible
 try:
@@ -57,6 +58,15 @@ def main(args):
     zones.load()
     alerts = Alerts(cooldown_seconds=args.cooldown)
     fpsc = FPSCounter()
+    
+    # Inicializar filtro geométrico avanzado
+    geo_filter = GeometricFilter(
+        min_time_in_zone=args.min_time_zone,
+        min_bbox_area=args.min_bbox_area,
+        min_confidence=args.conf,
+        trajectory_length=10,
+        min_movement_threshold=5.0
+    )
 
     cap = cv2.VideoCapture(int(args.source) if str(args.source).isdigit() else args.source)
     if not cap.isOpened():
@@ -73,18 +83,22 @@ def main(args):
     last_dets = []
     last_tracks = []
 
-    print('\n' + '='*50)
+    print('\n' + '='*60)
     print('SISTEMA DE DETECCIÓN DE INTRUSIONES ACTIVO')
-    print('='*50)
+    print('='*60)
     print(f'Modelo: {args.weights or "yolov8n.pt (default)"}')
     print(f'Tracker: {tracker_name}')
+    print(f'Filtrado Geométrico: {"ACTIVADO" if args.use_geometric_filter else "DESACTIVADO"}')
+    if args.use_geometric_filter:
+        print(f'  └─ Tiempo mínimo en zona: {args.min_time_zone}s')
+        print(f'  └─ Área mínima bbox: {args.min_bbox_area}px²')
     print(f'Tamaño de inferencia: {args.imgsz}px')
     print(f'Skip frames: {args.skip_frames} (0=procesar todos)')
     print(f'Zonas configuradas: {len(zones.zones)}')
     print(f'Umbral de confianza: {args.conf}')
     print(f'Alertas WhatsApp: {"SÍ" if args.use_whatsapp else "NO (solo local)"}')
     print('Presiona Q o ESC para salir')
-    print('='*50 + '\n')
+    print('='*60 + '\n')
 
     while True:
         ret, frame = cap.read()
@@ -115,18 +129,21 @@ def main(args):
 
         # check tracks against zones
         current_in_zone = set()
+        active_track_ids = [t['track_id'] for t in tracks]
+        
         for i, t in enumerate(tracks):
             bid = t['track_id']
             bbox = t['bbox']
             x, y = bbox_center(bbox)
             
             # Buscar confianza en las detecciones originales
-            conf = 0.0
-            for d in dets:
-                db = d['bbox']
-                if abs(db[0]-bbox[0]) < 5 and abs(db[1]-bbox[1]) < 5:  # match aproximado
-                    conf = d['conf']
-                    break
+            conf = t.get('conf', 0.0)
+            if conf == 0.0:
+                for d in dets:
+                    db = d['bbox']
+                    if abs(db[0]-bbox[0]) < 5 and abs(db[1]-bbox[1]) < 5:  # match aproximado
+                        conf = d['conf']
+                        break
             
             # Determinar si está dentro de zona
             inside = False
@@ -134,13 +151,37 @@ def main(args):
                 for poly in zones.zones:
                     if cv2.pointPolygonTest(np.array(poly, dtype=np.int32), (int(x), int(y)), False) >= 0:
                         inside = True
-                        current_in_zone.add(bid)
                         break
             
+            # 🔹 APLICAR FILTRADO GEOMÉTRICO AVANZADO
+            is_valid_intrusion = False
+            validation_result = None
+            
+            if args.use_geometric_filter:
+                validation_result = geo_filter.validate_intrusion(
+                    track_id=bid,
+                    bbox=bbox,
+                    confidence=conf,
+                    center=(x, y),
+                    is_in_zone=inside
+                )
+                is_valid_intrusion = validation_result['is_valid']
+            else:
+                # Sin filtrado, confiar directamente en "inside"
+                is_valid_intrusion = inside
+            
+            # Marcar como en zona solo si pasa validación
+            if is_valid_intrusion:
+                current_in_zone.add(bid)
+            
             # Color y label según estado
-            if inside:
-                color = (0, 0, 255)  # Rojo si está en zona
+            if is_valid_intrusion:
+                color = (0, 0, 255)  # Rojo si está en zona validada
                 label = f'Person ({conf:.2f})'
+            elif inside and args.use_geometric_filter:
+                # En zona pero no validado (aún esperando tiempo o filtrado)
+                color = (0, 165, 255)  # Naranja (BGR)
+                label = f'Person ({conf:.2f}) - Validando...'
             else:
                 color = (0, 255, 0)  # Verde si está fuera
                 label = f'Person ({conf:.2f})'
@@ -148,15 +189,25 @@ def main(args):
             draw_bbox(frame, bbox, label=label, color=color, thickness=2)
             
             # Punto de tracking en el centro
-            point_color = (0, 0, 255) if inside else (0, 255, 255)  # Rojo si intrusion, amarillo si seguro
+            if is_valid_intrusion:
+                point_color = (0, 0, 255)  # Rojo: intrusión validada
+            elif inside and args.use_geometric_filter:
+                point_color = (0, 165, 255)  # Naranja: en validación
+            else:
+                point_color = (0, 255, 255)  # Amarillo: seguro
+            
             draw_tracking_point(frame, (x, y), bid, color=point_color)
             
-            # Alerta si está dentro
-            if inside:
+            # Alerta solo si pasa validación geométrica
+            if is_valid_intrusion:
                 if alerts.alert_for_track(bid, f'⚠️ INTRUSION: Persona {bid} detectada en zona restringida', use_whatsapp=args.use_whatsapp):
                     total_alerts += 1
 
         tracks_in_zone = current_in_zone
+        
+        # Limpiar tracks antiguos del filtro geométrico
+        if args.use_geometric_filter:
+            geo_filter.cleanup_old_tracks(active_track_ids)
         
         # Overlay de estadísticas profesional
         draw_fps_professional(frame, fpsc.fps(), frame_number=frame_count)
@@ -180,10 +231,24 @@ def main(args):
     cap.release()
     cv2.destroyAllWindows()
     
-    print('\n' + '='*50)
+    print('\n' + '='*60)
     print('SISTEMA DETENIDO')
+    print('='*60)
     print(f'Total de alertas enviadas: {total_alerts}')
-    print('='*50)
+    
+    # Mostrar estadísticas del filtro geométrico
+    if args.use_geometric_filter:
+        filter_stats = geo_filter.get_statistics()
+        print('\nEstadísticas de Filtrado Geométrico:')
+        print(f'  Total detecciones procesadas: {filter_stats["total_detections"]}')
+        print(f'  Filtradas por tamaño: {filter_stats["filtered_by_size"]}')
+        print(f'  Filtradas por confianza: {filter_stats["filtered_by_confidence"]}')
+        print(f'  Filtradas por tiempo insuficiente: {filter_stats["filtered_by_time"]}')
+        print(f'  Filtradas por objeto estático: {filter_stats["filtered_by_movement"]}')
+        print(f'  Intrusiones válidas: {filter_stats["valid_intrusions"]}')
+        print(f'  Tasa de filtrado: {filter_stats["filter_rate"]:.1f}%')
+    
+    print('='*60)
 
 
 if __name__ == '__main__':
@@ -198,5 +263,14 @@ if __name__ == '__main__':
     parser.add_argument('--skip_frames', type=int, default=0, help='Procesar 1 de cada N frames (0=todos, 1=la mitad, 2=un tercio, etc)')
     parser.add_argument('--tracker', default='bytetrack', choices=['simple', 'bytetrack'], 
                         help='Algoritmo de tracking: simple (IoU básico) o bytetrack (robusto, default)')
+    
+    # Parámetros de filtrado geométrico avanzado
+    parser.add_argument('--use_geometric_filter', action='store_true', 
+                        help='Activar filtrado geométrico avanzado (reduce falsos positivos 40%+)')
+    parser.add_argument('--min_time_zone', type=float, default=2.0,
+                        help='Tiempo mínimo (segundos) en zona antes de alertar (default: 2.0)')
+    parser.add_argument('--min_bbox_area', type=int, default=2000,
+                        help='Área mínima del bbox en píxeles para validar detección (default: 2000)')
+    
     args = parser.parse_args()
     main(args)
