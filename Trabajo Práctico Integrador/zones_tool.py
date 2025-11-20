@@ -1,5 +1,7 @@
 """Herramienta interactiva para dibujar/editar zonas poligonales usando OpenCV.
 Ejecutar: python zones_tool.py [--source 0]
+         python zones_tool.py --source screen
+         python zones_tool.py --source screen:2
 Instrucciones:
 - Click izquierdo: agregar punto al polígono
 - 'n': nueva zona (completar zona actual y empezar otra)
@@ -14,6 +16,7 @@ import os
 import argparse
 import numpy as np
 from src.zones import ZonesManager
+from src.screen_capture import create_screen_source, list_monitors
 
 WINDOW = 'Zones Tool - Dibuja zonas sobre video en vivo'
 
@@ -21,11 +24,11 @@ def main(source=0, out_path='zones.json'):
     zm = ZonesManager(out_path)
     zm.load()
 
-    # Abrir cámara o video
-    cap = cv2.VideoCapture(source if isinstance(source, int) else source)
+    # Abrir cámara, video o pantalla usando create_screen_source
+    cap = create_screen_source(source)
     if not cap.isOpened():
         print(f'ERROR: No se pudo abrir la fuente: {source}')
-        print('Tip: usa --source 0 para webcam o --source video.mp4 para un archivo')
+        print('Tip: usa --source 0 para webcam, --source video.mp4 para un archivo, o --source screen para captura de pantalla')
         return
 
     current = []
@@ -159,10 +162,18 @@ def main(source=0, out_path='zones.json'):
         print(f'AVISO: Tienes una zona sin guardar con {len(current)} puntos. Vuelve a ejecutar y presiona "s" para guardarla.')
 
 if __name__ == '__main__':
-    parser = argparse.ArgumentParser(description='Herramienta para dibujar zonas sobre video en vivo')
-    parser.add_argument('--source', default=0, help='Fuente de video: 0 para webcam, o ruta a archivo de video')
+    parser = argparse.ArgumentParser(description='Herramienta para dibujar zonas sobre video en vivo o captura de pantalla')
+    parser.add_argument('--source', default=0, 
+                        help='Fuente de video: 0 para webcam, ruta a archivo, "screen" para captura de pantalla, '
+                             '"screen:1" para monitor específico, "screen:region:x,y,w,h" para región específica')
     parser.add_argument('--output', default='zones.json', help='Archivo de salida para zonas')
+    parser.add_argument('--list_monitors', action='store_true', help='Listar monitores disponibles y salir')
     args = parser.parse_args()
+    
+    # Si se solicita listar monitores
+    if args.list_monitors:
+        list_monitors()
+        exit(0)
     
     # Convertir source a int si es un número
     source = args.source

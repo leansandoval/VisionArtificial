@@ -3,9 +3,13 @@
 Uso mínimo:
     python main.py --source 0
     python main.py --source video.mp4 --weights path/to/yolov11.pt
+    python main.py --source screen  # Captura de pantalla
 
 Notas:
 - Proyecto preparado para CPU (no CUDA). Puedes suministrar tus pesos YOLOv11 si los tienes.
+- Usa --source screen para capturar la pantalla completa
+- Usa --source screen:1 para capturar un monitor específico
+- Usa --source screen:region:x,y,w,h para capturar una región específica
 """
 import argparse
 import cv2
@@ -21,6 +25,7 @@ from src.overlay import (draw_bbox, draw_zone, draw_fps_professional,
                          draw_stats_panel, draw_logo, draw_tracking_point)
 from src.utils import FPSCounter
 from src.geometric_filter import GeometricFilter
+from src.screen_capture import create_screen_source, list_monitors
 
 # Importar ByteTrack si está disponible
 try:
@@ -68,7 +73,8 @@ def main(args):
         min_movement_threshold=5.0
     )
 
-    cap = cv2.VideoCapture(int(args.source) if str(args.source).isdigit() else args.source)
+    # Usar create_screen_source para soportar captura de pantalla
+    cap = create_screen_source(args.source)
     if not cap.isOpened():
         print('No se pudo abrir fuente:', args.source)
         return
@@ -253,7 +259,9 @@ def main(args):
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
-    parser.add_argument('--source', default=0, help='Índice de cámara o ruta de video')
+    parser.add_argument('--source', default=0, 
+                        help='Fuente de video: índice de cámara (0), ruta de video, o "screen" para captura de pantalla. '
+                             'Ejemplos: 0, video.mp4, screen, screen:1, screen:region:100,100,800,600')
     parser.add_argument('--weights', default=None, help='Ruta a pesos YOLO (ej: yolov11.pt o yolov8n.pt)')
     parser.add_argument('--zones', default='zones.json', help='Archivo JSON con zonas')
     parser.add_argument('--conf', type=float, default=0.3, help='Umbral de confianza')
@@ -263,6 +271,8 @@ if __name__ == '__main__':
     parser.add_argument('--skip_frames', type=int, default=0, help='Procesar 1 de cada N frames (0=todos, 1=la mitad, 2=un tercio, etc)')
     parser.add_argument('--tracker', default='bytetrack', choices=['simple', 'bytetrack'], 
                         help='Algoritmo de tracking: simple (IoU básico) o bytetrack (robusto, default)')
+    parser.add_argument('--list_monitors', action='store_true', 
+                        help='Listar monitores disponibles y salir')
     
     # Parámetros de filtrado geométrico avanzado
     parser.add_argument('--use_geometric_filter', action='store_true', 
@@ -273,4 +283,10 @@ if __name__ == '__main__':
                         help='Área mínima del bbox en píxeles para validar detección (default: 2000)')
     
     args = parser.parse_args()
+    
+    # Si se solicita listar monitores
+    if args.list_monitors:
+        list_monitors()
+        exit(0)
+    
     main(args)

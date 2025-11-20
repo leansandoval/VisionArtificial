@@ -3,4 +3,5 @@ opencv-python
 numpy
 scipy
 supervision>=0.16.0
+mss  # Para captura de pantalla
 # twilio  # Opcional: habilitar Long Path en Windows primero (ver README)
