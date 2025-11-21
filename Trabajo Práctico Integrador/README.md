@@ -26,9 +26,30 @@ Notas importantes
 - **Sin Twilio**: El sistema funciona perfectamente sin Twilio, usando alertas locales (beep + log en consola)
 
 Cómo usar
-1. Dibujar zonas sobre video en vivo:
+1. **Cámaras IP / RTSP**:
+   
+   **Opción rápida** (tu cámara Hikvision configurada):
+   ```powershell
+   .\run_my_ipcamera.ps1
+   ```
+   
+   **Opción interactiva** (cualquier cámara):
+   ```powershell
+   .\run_ip_camera.ps1
+   ```
+   Ejemplo de URLs RTSP:
+   - Hikvision HD: `rtsp://admin:password@192.168.1.42:554/Streaming/Channels/101`
+   - Hikvision SD: `rtsp://admin:password@192.168.1.42:554/Streaming/Channels/102` (recomendado para CPU)
+   - HTTP genérico: `http://192.168.1.100:8080/video`
+   - DroidCam: `http://192.168.1.50:4747/video`
+
+2. Dibujar zonas sobre video en vivo:
    ```powershell
    python zones_tool.py --source 0
+   ```
+   Para cámaras IP:
+   ```powershell
+   python zones_tool.py --source "rtsp://admin:password@192.168.1.42:554/Streaming/Channels/102"
    ```
    - Click izquierdo: agregar punto
    - ESPACIO: pausar/reanudar video (recomendado para dibujar con precisión)
@@ -36,7 +57,7 @@ Cómo usar
    - `s`: guardar todas las zonas
    - `q`: salir
 
-2. Ejecutar sistema de detección:
+3. Ejecutar sistema de detección:
    
    **Modo estándar** (10-15 FPS en CPU):
    ```powershell

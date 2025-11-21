@@ -73,8 +73,8 @@ def main(args):
         min_movement_threshold=5.0
     )
 
-    # Usar create_screen_source para soportar captura de pantalla
-    cap = create_screen_source(args.source)
+    # Usar create_screen_source para soportar captura de pantalla y RTSP
+    cap = create_screen_source(args.source, rtsp_transport=args.rtsp_transport, timeout=args.timeout)
     if not cap.isOpened():
         print('No se pudo abrir fuente:', args.source)
         return
@@ -106,10 +106,36 @@ def main(args):
     print('Presiona Q o ESC para salir')
     print('='*60 + '\n')
 
+    # Contador de reconexiones para streams RTSP
+    consecutive_failures = 0
+    is_stream = str(args.source).lower().startswith(('rtsp://', 'http://'))
+
     while True:
         ret, frame = cap.read()
         if not ret:
-            break
+            # Si es un stream, intentar reconexión
+            if is_stream and consecutive_failures < args.max_retries:
+                consecutive_failures += 1
+                print(f'\n[WARNING] Frame perdido. Intento de reconexión {consecutive_failures}/{args.max_retries}...')
+                cap.release()
+                time.sleep(2)  # Esperar antes de reconectar
+                cap = create_screen_source(args.source, rtsp_transport=args.rtsp_transport, timeout=args.timeout)
+                if cap.isOpened():
+                    print('[SUCCESS] Reconectado exitosamente')
+                    consecutive_failures = 0
+                    continue
+                else:
+                    print('[ERROR] Fallo en reconexión')
+                    continue
+            else:
+                # Si no es stream o se agotaron los reintentos
+                if is_stream:
+                    print(f'\n[ERROR] Máximo de reintentos alcanzado ({args.max_retries}). Cerrando...')
+                break
+        else:
+            # Reset del contador si se lee frame exitosamente
+            consecutive_failures = 0
+            
         fpsc.tick()
         frame_count += 1
         
@@ -281,6 +307,14 @@ if __name__ == '__main__':
                         help='Tiempo mínimo (segundos) en zona antes de alertar (default: 2.0)')
     parser.add_argument('--min_bbox_area', type=int, default=2000,
                         help='Área mínima del bbox en píxeles para validar detección (default: 2000)')
+    
+    # Parámetros RTSP/IP Camera
+    parser.add_argument('--rtsp_transport', default='tcp', choices=['tcp', 'udp'], 
+                        help='Protocolo de transporte RTSP (tcp o udp, default: tcp)')
+    parser.add_argument('--max_retries', type=int, default=10,
+                        help='Intentos máximos de reconexión para streams RTSP (default: 10)')
+    parser.add_argument('--timeout', type=int, default=10000,
+                        help='Timeout en milisegundos para conexión RTSP (default: 10000)')
     
     args = parser.parse_args()
     

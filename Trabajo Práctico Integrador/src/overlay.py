@@ -23,13 +23,13 @@ def draw_tracking_point(frame, point, track_id, color=(255,255,255)):
     (tw, th), _ = cv2.getTextSize(text, cv2.FONT_HERSHEY_SIMPLEX, 0.5, 1)
     cv2.putText(frame, text, (x - tw//2, y + 20), cv2.FONT_HERSHEY_SIMPLEX, 0.5, color, 2, cv2.LINE_AA)
 
-def draw_zone(frame, poly, color=(0,0,255), thickness=2, alpha=0.15, zone_name=None, zone_id=None):
+def draw_zone(frame, poly, color=(0,0,255), thickness=2, alpha=0.08, zone_name=None, zone_id=None):
     """Dibuja zona poligonal con nombre opcional"""
     pts = np.array(poly, dtype=np.int32)
     overlay = frame.copy()
     
-    # Dibujar polígono
-    cv2.polylines(overlay, [pts], isClosed=True, color=color, thickness=thickness)
+    # Dibujar polígono con borde más visible
+    cv2.polylines(overlay, [pts], isClosed=True, color=color, thickness=thickness+1)
     cv2.fillPoly(overlay, [pts], color)
     cv2.addWeighted(overlay, alpha, frame, 1-alpha, 0, frame)
     
@@ -38,9 +38,11 @@ def draw_zone(frame, poly, color=(0,0,255), thickness=2, alpha=0.15, zone_name=N
         centroid = np.mean(pts, axis=0).astype(int)
         label = zone_name if zone_name else f"Zone {zone_id}"
         (tw, th), _ = cv2.getTextSize(label, cv2.FONT_HERSHEY_SIMPLEX, 0.7, 2)
-        # Fondo para el texto
-        cv2.rectangle(frame, (centroid[0]-tw//2-5, centroid[1]-th-5), 
+        # Fondo semi-transparente para el texto
+        overlay_text = frame.copy()
+        cv2.rectangle(overlay_text, (centroid[0]-tw//2-5, centroid[1]-th-5), 
                      (centroid[0]+tw//2+5, centroid[1]+5), (0,0,0), -1)
+        cv2.addWeighted(overlay_text, 0.6, frame, 0.4, 0, frame)
         cv2.putText(frame, label, (centroid[0]-tw//2, centroid[1]), 
                    cv2.FONT_HERSHEY_SIMPLEX, 0.7, color, 2, cv2.LINE_AA)
 

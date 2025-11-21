@@ -110,13 +110,15 @@ class ScreenCapture:
         return False
 
 
-def create_screen_source(source_arg):
+def create_screen_source(source_arg, rtsp_transport='tcp', timeout=10000):
     """
     Factory function para crear fuente de captura.
     Retorna ScreenCapture si source_arg es 'screen', sino cv2.VideoCapture normal.
     
     Args:
-        source_arg: Argumento de fuente ('screen', 'screen:1', '0', 'video.mp4', etc.)
+        source_arg: Argumento de fuente ('screen', 'screen:1', '0', 'video.mp4', 'rtsp://...', etc.)
+        rtsp_transport: Protocolo de transporte para RTSP ('tcp' o 'udp')
+        timeout: Timeout en milisegundos para streams RTSP
     
     Returns:
         Objeto compatible con cv2.VideoCapture
@@ -128,6 +130,7 @@ def create_screen_source(source_arg):
         'screen:region:100,100,800,600' -> Región específica (x,y,w,h)
         '0' -> cv2.VideoCapture(0) - webcam
         'video.mp4' -> cv2.VideoCapture('video.mp4')
+        'rtsp://...' -> cv2.VideoCapture optimizado para RTSP
     """
     source_str = str(source_arg).lower()
     
@@ -152,6 +155,39 @@ def create_screen_source(source_arg):
         
         # screen (monitor principal)
         return ScreenCapture(monitor_index=1)
+    
+    # Fuente RTSP (URL con rtsp://)
+    if source_str.startswith('rtsp://') or source_str.startswith('http://'):
+        print(f'[INFO] Conectando a stream: {source_arg}')
+        print(f'[INFO] Transporte: {rtsp_transport.upper()}, Timeout: {timeout}ms')
+        
+        cap = cv2.VideoCapture(source_arg, cv2.CAP_FFMPEG)
+        
+        # Configuración optimizada para RTSP
+        cap.set(cv2.CAP_PROP_BUFFERSIZE, 0)  # Sin buffer para baja latencia
+        cap.set(cv2.CAP_PROP_OPEN_TIMEOUT_MSEC, timeout)
+        cap.set(cv2.CAP_PROP_READ_TIMEOUT_MSEC, timeout)
+        
+        # Opciones FFMPEG para baja latencia
+        if rtsp_transport.lower() == 'tcp':
+            # TCP es más confiable pero puede tener más latencia
+            pass  # OpenCV usa TCP por defecto con FFMPEG
+        elif rtsp_transport.lower() == 'udp':
+            # UDP es más rápido pero menos confiable
+            # Nota: OpenCV no expone directamente rtsp_transport en CAP_PROP
+            print('[WARNING] UDP transport no completamente soportado en OpenCV, usando TCP')
+        
+        if cap.isOpened():
+            print('[SUCCESS] Stream RTSP conectado exitosamente')
+            # Mostrar info del stream
+            width = int(cap.get(cv2.CAP_PROP_FRAME_WIDTH))
+            height = int(cap.get(cv2.CAP_PROP_FRAME_HEIGHT))
+            fps = cap.get(cv2.CAP_PROP_FPS)
+            print(f'[INFO] Resolución: {width}x{height}, FPS: {fps:.1f}')
+        else:
+            print('[ERROR] No se pudo conectar al stream RTSP')
+        
+        return cap
     
     # Fuente normal (webcam o archivo)
     if source_str.isdigit():
