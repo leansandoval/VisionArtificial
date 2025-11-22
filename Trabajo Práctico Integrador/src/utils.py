@@ -1,5 +1,5 @@
-import time
 import collections
+import time
 
 class FPSCounter:
     def __init__(self, window_size=16):
