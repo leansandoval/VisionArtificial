@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Configuración - Sistema de Detección</title>
+    
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/dashboard.css') }}">
+</head>
+<body>
+    <!-- Navbar -->
+    <nav class="navbar navbar-dark bg-dark shadow">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="/">
+                <i class="bi bi-shield-check"></i>
+                Sistema de Detección de Intrusiones
+            </a>
+            <div class="d-flex align-items-center gap-3">
+                <a href="/" class="btn btn-outline-light btn-sm">
+                    <i class="bi bi-house"></i> Dashboard
+                </a>
+                <a href="/zones" class="btn btn-outline-light btn-sm">
+                    <i class="bi bi-map"></i> Zonas
+                </a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container mt-4 mb-5">
+        <div class="row">
+            <div class="col-lg-10 mx-auto">
+                <div class="card shadow">
+                    <div class="card-header bg-primary text-white">
+                        <h4 class="mb-0">
+                            <i class="bi bi-gear"></i> Configuración del Sistema
+                        </h4>
+                    </div>
+                    <div class="card-body">
+                        <form id="settings-form">
+                            
+                            <!-- Fuente de Video -->
+                            <div class="settings-section">
+                                <h5 class="text-primary mb-3">
+                                    <i class="bi bi-camera-video"></i> Fuente de Video
+                                </h5>
+                                
+                                <div class="mb-3">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="radio" name="source_type" id="source-webcam" value="webcam" checked>
+                                        <label class="form-check-label" for="source-webcam">
+                                            <i class="bi bi-webcam"></i> Webcam
+                                        </label>
+                                    </div>
+                                    <div class="ms-4 mt-2" id="webcam-config">
+                                        <label class="form-label small">Selecciona tu cámara:</label>
+                                        <div class="d-flex gap-2 align-items-center">
+                                            <select class="form-select form-select-sm" id="source-webcam-select" style="flex: 1;">
+                                                <option value="">Cargando cámaras...</option>
+                                            </select>
+                                            <button type="button" class="btn btn-sm btn-outline-secondary" id="btn-refresh-cameras" title="Actualizar lista de cámaras">
+                                                <i class="bi bi-arrow-clockwise"></i>
+                                            </button>
+                                        </div>
+                                        <small class="text-muted">Si no ves tu cámara, haz clic en actualizar</small>
+                                    </div>
+                                </div>
+
+                                <div class="mb-3">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="radio" name="source_type" id="source-rtsp" value="rtsp">
+                                        <label class="form-check-label" for="source-rtsp">
+                                            <i class="bi bi-broadcast"></i> Cámara IP (RTSP)
+                                        </label>
+                                    </div>
+                                    <div class="ms-4 mt-2" id="rtsp-config" style="display: none;">
+                                        <div class="row g-2">
+                                            <div class="col-md-6">
+                                                <label class="form-label small">Usuario:</label>
+                                                <input type="text" class="form-control form-control-sm" id="rtsp-user" placeholder="admin">
+                                            </div>
+                                            <div class="col-md-6">
+                                                <label class="form-label small">Contraseña:</label>
+                                                <input type="password" class="form-control form-control-sm" id="rtsp-password" placeholder="********">
+                                            </div>
+                                        </div>
+                                        <div class="row g-2 mt-1">
+                                            <div class="col-md-8">
+                                                <label class="form-label small">IP de la cámara:</label>
+                                                <input type="text" class="form-control form-control-sm" id="rtsp-ip" placeholder="192.168.1.100">
+                                            </div>
+                                            <div class="col-md-4">
+                                                <label class="form-label small">Puerto:</label>
+                                                <input type="number" class="form-control form-control-sm" id="rtsp-port" value="554" min="1" max="65535">
+                                            </div>
+                                        </div>
+                                        <div class="row g-2 mt-1">
+                                            <div class="col-md-12">
+                                                <label class="form-label small">Ruta del stream:</label>
+                                                <input type="text" class="form-control form-control-sm" id="rtsp-path" placeholder="/Streaming/Channels/101">
+                                                <small class="text-muted">Ejemplo Hikvision: /Streaming/Channels/101 o 102 (substream)</small>
+                                            </div>
+                                        </div>
+                                        <div class="row mt-2">
+                                            <div class="col-md-6">
+                                                <label class="form-label small">Protocolo:</label>
+                                                <select class="form-select form-select-sm" id="rtsp-transport">
+                                                    <option value="tcp" selected>TCP (recomendado)</option>
+                                                    <option value="udp">UDP</option>
+                                                </select>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <label class="form-label small">Timeout (ms):</label>
+                                                <input type="number" class="form-control form-control-sm" id="rtsp-timeout" value="10000" min="1000" max="30000">
+                                            </div>
+                                        </div>
+                                        <div class="mt-2">
+                                            <small class="text-muted">
+                                                <i class="bi bi-info-circle"></i> 
+                                                URL construida: <code id="rtsp-url-preview">rtsp://usuario:password@IP:puerto/path</code>
+                                            </small>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="mb-3">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="radio" name="source_type" id="source-screen" value="screen">
+                                        <label class="form-check-label" for="source-screen">
+                                            <i class="bi bi-display"></i> Captura de Pantalla
+                                        </label>
+                                    </div>
+                                    <div class="ms-4 mt-2" id="screen-config" style="display: none;">
+                                        <label class="form-label small">Monitor:</label>
+                                        <div class="d-flex align-items-center gap-2">
+                                            <select class="form-select form-select-sm" id="source-screen-monitor" style="width: 300px;" disabled>
+                                                <option value="">🔍 Detectando monitores...</option>
+                                            </select>
+                                            <button type="button" class="btn btn-outline-primary btn-sm" id="btn-refresh-monitors" title="Actualizar lista de monitores" disabled>
+                                                <i class="bi bi-arrow-clockwise"></i>
+                                            </button>
+                                        </div>
+                                        <small class="form-text text-muted">Selecciona el monitor a capturar</small>
+                                    </div>
+                                </div>
+
+                                <div class="mb-3">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="radio" name="source_type" id="source-video" value="video">
+                                        <label class="form-check-label" for="source-video">
+                                            <i class="bi bi-file-play"></i> Archivo de Video
+                                        </label>
+                                    </div>
+                                    <div class="ms-4 mt-2" id="video-config" style="display: none;">
+                                        <label class="form-label small">Ruta del archivo:</label>
+                                        <input type="text" class="form-control form-control-sm" id="source-video-file" 
+                                               placeholder="C:\ruta\al\video.mp4">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <hr>
+
+                            <!-- Detección -->
+                            <div class="settings-section">
+                                <h5 class="text-primary mb-3">
+                                    <i class="bi bi-cpu"></i> Configuración de Detección
+                                </h5>
+                                
+                                <div class="row mb-3">
+                                    <div class="col-md-6">
+                                        <label class="form-label">Modelo YOLO:</label>
+                                        <input type="text" class="form-control" id="weights" value="{{ config.weights }}" placeholder="yolov8n.pt">
+                                        <small class="text-muted">Archivo del modelo (debe estar en la carpeta raíz)</small>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label class="form-label">Tamaño de Inferencia:</label>
+                                        <select class="form-select" id="imgsz">
+                                            <option value="416">416px (más rápido)</option>
+                                            <option value="640" selected>640px (balanceado)</option>
+                                            <option value="1280">1280px (más preciso)</option>
+                                        </select>
+                                    </div>
+                                </div>
+
+                                <div class="row mb-3">
+                                    <div class="col-md-6">
+                                        <label class="form-label">
+                                            Confianza Mínima: <span id="conf-value">{{ config.conf }}</span>
+                                        </label>
+                                        <input type="range" class="form-range" id="conf" min="0.1" max="0.9" step="0.05" value="{{ config.conf }}">
+                                        <small class="text-muted">Mayor = menos falsos positivos, menor = más detecciones</small>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label class="form-label">
+                                            Skip Frames: <span id="skip-value">{{ config.skip_frames }}</span>
+                                        </label>
+                                        <input type="range" class="form-range" id="skip_frames" min="0" max="5" step="1" value="{{ config.skip_frames }}">
+                                        <small class="text-muted">Omitir frames para mejorar FPS (0 = procesar todos)</small>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <hr>
+
+                            <!-- Tracking -->
+                            <div class="settings-section">
+                                <h5 class="text-primary mb-3">
+                                    <i class="bi bi-bullseye"></i> Tracking y Filtrado
+                                </h5>
+                                
+                                <div class="mb-3">
+                                    <label class="form-label">Algoritmo de Tracking:</label>
+                                    <select class="form-select" id="tracker">
+                                        <option value="bytetrack" {{ 'selected' if config.tracker == 'bytetrack' else '' }}>ByteTrack (recomendado)</option>
+                                        <option value="simple" {{ 'selected' if config.tracker == 'simple' else '' }}>SimpleTracker</option>
+                                    </select>
+                                    {% if not bytetrack_available %}
+                                    <small class="text-warning">
+                                        <i class="bi bi-exclamation-triangle"></i> ByteTrack no está disponible. Se usará SimpleTracker.
+                                    </small>
+                                    {% endif %}
+                                </div>
+
+                                <div class="form-check form-switch mb-3">
+                                    <input class="form-check-input" type="checkbox" id="use_geometric_filter" {{ 'checked' if config.use_geometric_filter else '' }}>
+                                    <label class="form-check-label" for="use_geometric_filter">
+                                        <strong>Activar Filtrado Geométrico</strong> (reduce falsos positivos)
+                                    </label>
+                                </div>
+
+                                <div id="geometric-filter-config" {{ 'style=display:none' if not config.use_geometric_filter else '' }}>
+                                    <div class="row mb-3">
+                                        <div class="col-md-6">
+                                            <label class="form-label">
+                                                Tiempo Mínimo en Zona: <span id="min-time-value">{{ config.min_time_zone }}</span>s
+                                            </label>
+                                            <input type="range" class="form-range" id="min_time_zone" min="0.5" max="10" step="0.5" value="{{ config.min_time_zone }}">
+                                            <small class="text-muted">Tiempo antes de activar alerta</small>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <label class="form-label">
+                                                Área Mínima BBox: <span id="min-area-value">{{ config.min_bbox_area }}</span>px²
+                                            </label>
+                                            <input type="range" class="form-range" id="min_bbox_area" min="500" max="10000" step="100" value="{{ config.min_bbox_area }}">
+                                            <small class="text-muted">Filtrar detecciones muy pequeñas</small>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <hr>
+
+                            <!-- Alertas -->
+                            <div class="settings-section">
+                                <h5 class="text-primary mb-3">
+                                    <i class="bi bi-bell"></i> Sistema de Alertas
+                                </h5>
+                                
+                                <div class="form-check form-switch mb-3">
+                                    <input class="form-check-input" type="checkbox" id="use_whatsapp" {{ 'checked' if config.use_whatsapp else '' }}>
+                                    <label class="form-check-label" for="use_whatsapp">
+                                        Activar alertas por WhatsApp (Twilio)
+                                    </label>
+                                    <small class="text-muted d-block">Requiere configurar variables de entorno para Twilio</small>
+                                </div>
+
+                                <div class="mb-3">
+                                    <label class="form-label">
+                                        Cooldown entre alertas: <span id="cooldown-value">{{ config.cooldown }}</span>s
+                                    </label>
+                                    <input type="range" class="form-range" id="cooldown" min="1" max="60" step="1" value="{{ config.cooldown }}">
+                                    <small class="text-muted">Tiempo de espera entre alertas de la misma persona</small>
+                                </div>
+                            </div>
+
+                            <hr>
+
+                            <!-- Botones -->
+                            <div class="d-flex justify-content-between">
+                                <button type="button" class="btn btn-secondary" id="btn-reset">
+                                    <i class="bi bi-arrow-counterclockwise"></i> Restaurar Valores por Defecto
+                                </button>
+                                <div>
+                                    <a href="/" class="btn btn-outline-secondary me-2">
+                                        <i class="bi bi-x"></i> Cancelar
+                                    </a>
+                                    <button type="submit" class="btn btn-primary">
+                                        <i class="bi bi-save"></i> Guardar Configuración
+                                    </button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast para notificaciones -->
+    <div class="position-fixed bottom-0 end-0 p-3" style="z-index: 11">
+        <div id="notification-toast" class="toast hide" role="alert">
+            <div class="toast-header">
+                <i class="bi bi-check-circle-fill text-success me-2"></i>
+                <strong class="me-auto">Configuración</strong>
+                <button type="button" class="btn-close" data-bs-dismiss="toast"></button>
+            </div>
+            <div class="toast-body">
+                Configuración guardada correctamente
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="{{ url_for('static', filename='js/settings.js') }}"></script>
+</body>
+</html>
