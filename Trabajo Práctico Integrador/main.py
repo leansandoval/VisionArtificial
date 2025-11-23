@@ -20,7 +20,7 @@ import time
 from src.alerts import Alerts
 from src.detector import Detector
 from src.geometric_filter import GeometricFilter
-from src.overlay import (dibujar_bounding_box, draw_zone, draw_fps_professional, draw_stats_panel, dibujar_punto_de_tracking)
+from src.overlay import (dibujar_bounding_box, dibujar_zona, draw_fps_professional, draw_stats_panel, dibujar_punto_de_tracking)
 from src.screen_capture import create_screen_source, list_monitors
 from src.tracker import SimpleTracker
 from src.utils import ContadorFPS
@@ -156,7 +156,7 @@ def main(args):
         for zone_idx, poly in enumerate(zones.zones):
             zone_name = zones.get_zone_name(zone_idx)
             zone_color = (0, 0, 255)  # Rojo por defecto
-            draw_zone(frame, poly, color=zone_color, zone_name=zone_name)
+            dibujar_zona(frame, poly, color=zone_color, zone_name=zone_name)
 
         # check tracks against zones
         current_in_zone = set()
