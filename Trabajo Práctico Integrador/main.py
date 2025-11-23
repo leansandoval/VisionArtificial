@@ -13,19 +13,18 @@ Notas:
 """
 import argparse
 import cv2
+import numpy as np
 import os
 import time
-import numpy as np
 
-from src.detector import Detector
-from src.tracker import SimpleTracker
-from src.zones import ZonesManager
 from src.alerts import Alerts
-from src.overlay import (draw_bbox, draw_zone, draw_fps_professional, 
-                         draw_stats_panel, draw_logo, draw_tracking_point)
-from src.utils import FPSCounter
+from src.detector import Detector
 from src.geometric_filter import GeometricFilter
+from src.overlay import (dibujar_bounding_box, draw_zone, draw_fps_professional, draw_stats_panel, dibujar_punto_de_tracking)
 from src.screen_capture import create_screen_source, list_monitors
+from src.tracker import SimpleTracker
+from src.utils import ContadorFPS
+from src.zones import ZonesManager
 
 # Importar ByteTrack si está disponible
 try:
@@ -62,7 +61,7 @@ def main(args):
     zones = ZonesManager(args.zones)
     zones.load()
     alerts = Alerts(cooldown_seconds=args.cooldown)
-    fpsc = FPSCounter()
+    fpsc = ContadorFPS()
     
     # Inicializar filtro geométrico avanzado
     geo_filter = GeometricFilter(
@@ -136,7 +135,7 @@ def main(args):
             # Reset del contador si se lee frame exitosamente
             consecutive_failures = 0
             
-        fpsc.tick()
+        fpsc.registrar_tiempo()
         frame_count += 1
         
         # Optimización: skip frames para mejorar FPS
@@ -218,7 +217,7 @@ def main(args):
                 color = (0, 255, 0)  # Verde si está fuera
                 label = f'Person ({conf:.2f})'
             
-            draw_bbox(frame, bbox, label=label, color=color, thickness=2)
+            dibujar_bounding_box(frame, bbox, label=label, color=color, thickness=2)
             
             # Punto de tracking en el centro
             if is_valid_intrusion:
@@ -228,7 +227,7 @@ def main(args):
             else:
                 point_color = (0, 255, 255)  # Amarillo: seguro
             
-            draw_tracking_point(frame, (x, y), bid, color=point_color)
+            dibujar_punto_de_tracking(frame, (x, y), bid, color=point_color)
             
             # Alerta solo si pasa validación geométrica
             if is_valid_intrusion:
@@ -242,7 +241,7 @@ def main(args):
             geo_filter.cleanup_old_tracks(active_track_ids)
         
         # Overlay de estadísticas profesional
-        draw_fps_professional(frame, fpsc.fps(), frame_number=frame_count)
+        draw_fps_professional(frame, fpsc.obtener_fps(), frame_number=frame_count)
         
         # Panel de estadísticas
         active_zones = sum(1 for _ in zones.zones if len(current_in_zone) > 0)
