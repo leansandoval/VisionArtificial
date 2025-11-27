@@ -21,21 +21,35 @@ TRANSPARENCIA_ZONA = 0.08
 
 #endregion
 
-#region Funciones
+#region Funciones Auxiliares
+
+def dibujar_texto_bounding_box(frame, label, color, x1, y1):
+    # Background para el texto
+    (tw, th), _ = cv2.getTextSize(label, cv2.FONT_HERSHEY_SIMPLEX, ESCALA_FUENTE_SESENTA_PORCIENTO, GROSOR_CONTORNO_TEXTO_DOS_PIXELES)
+    punto_esquina_superior_izquierda_rectangulo = (x1, max(0,y1 - th - 8))
+    punto_esquina_inferior_derecha_rectangulo = (x1 + tw + 6, y1)
+    cv2.rectangle(frame, punto_esquina_superior_izquierda_rectangulo, punto_esquina_inferior_derecha_rectangulo, color, GROSOR_RELLENO_COMPLETO)
+    punto_texto = (x1 + 3, max(th, y1 - 4))
+    cv2.putText(frame, label, punto_texto, cv2.FONT_HERSHEY_SIMPLEX, ESCALA_FUENTE_SESENTA_PORCIENTO, COLOR_TUPLA_NEGRO, GROSOR_CONTORNO_TEXTO_DOS_PIXELES, cv2.LINE_AA)
+
+def dibujar_estadisticas(frame, estadisticas, x_start, y_start):
+    y_offset = y_start + 20
+    for key, value in estadisticas.items():
+        text = f'{key}: {value}'
+        cv2.putText(frame, text, (x_start + 10, y_offset), cv2.FONT_HERSHEY_SIMPLEX, ESCALA_FUENTE_CINCUENTA_PORCIENTO, COLOR_TUPLA_BLANCO, GROSOR_CONTORNO_TEXTO_UN_PIXEL, cv2.LINE_AA)
+        y_offset += 25
+
+#endregion
+
+#region Funciones Principales
 
 def dibujar_bounding_box(frame, bounding_box, label=None, color=COLOR_TUPLA_VERDE, grosor=GROSOR_BOUNDING_BOX):
     x1,y1,x2,y2 = [int(v) for v in bounding_box]
     cv2.rectangle(frame, (x1,y1), (x2,y2), color, grosor)
     if label:
-        # Background para el texto
-        (tw, th), _ = cv2.getTextSize(label, cv2.FONT_HERSHEY_SIMPLEX, ESCALA_FUENTE_SESENTA_PORCIENTO, GROSOR_CONTORNO_TEXTO_DOS_PIXELES)
-        punto_esquina_superior_izquierda_rectangulo = (x1, max(0,y1 - th - 8))
-        punto_esquina_inferior_derecha_rectangulo = (x1 + tw + 6, y1)
-        cv2.rectangle(frame, punto_esquina_superior_izquierda_rectangulo, punto_esquina_inferior_derecha_rectangulo, color, GROSOR_RELLENO_COMPLETO)
-        punto_texto = (x1 + 3, max(th, y1 - 4))
-        cv2.putText(frame, label, punto_texto, cv2.FONT_HERSHEY_SIMPLEX, ESCALA_FUENTE_SESENTA_PORCIENTO, COLOR_TUPLA_NEGRO, GROSOR_CONTORNO_TEXTO_DOS_PIXELES, cv2.LINE_AA)
+        dibujar_texto_bounding_box(frame, label, color, x1, y1)
 
-# Dibuja punto de tracking con ID (círculo + número)
+# Dibuja punto de tracking con ID (Círculo + Número)
 def dibujar_punto_de_tracking(frame, punto, track_id, color=COLOR_TUPLA_BLANCO):
     x, y = int(punto[0]), int(punto[1])
     cv2.circle(frame, (x, y), RADIO_CIRCULO_EXTERIOR_ID_TRACKING, color, GROSOR_CONTORNO_TEXTO_DOS_PIXELES) # Círculo exterior
@@ -66,29 +80,28 @@ def dibujar_zona(frame, poly, color=COLOR_TUPLA_ROJO, thickness=GROSOR_CONTORNO_
         cv2.addWeighted(overlay_text, 0.6, frame, 0.4, 0, frame)
         cv2.putText(frame, label, punto_texto, cv2.FONT_HERSHEY_SIMPLEX, ESCALA_FUENTE_SETENTA_PORCIENTO, color, GROSOR_CONTORNO_TEXTO_DOS_PIXELES, cv2.LINE_AA)
 
-# Dibuja FPS y frame number en estilo profesional
-def draw_fps_professional(frame, fps, frame_number=None):
+def dibujar_fps(frame, fps, frame_number=None):
     text = f'FPS: {fps:.1f}'
     if frame_number is not None:
         text += f' | Frame: {frame_number}'
     (tw, th), _ = cv2.getTextSize(text, cv2.FONT_HERSHEY_SIMPLEX, ESCALA_FUENTE_SESENTA_PORCIENTO, GROSOR_CONTORNO_TEXTO_DOS_PIXELES)
     # Fondo semi-transparente
     overlay = frame.copy()
-    cv2.rectangle(overlay, (8, 8), (tw + 22, th + 22), COLOR_TUPLA_NEGRO, GROSOR_RELLENO_COMPLETO)
+    punto_esquina_superior_izquierda_rectangulo = (8, 8)
+    punto_esquina_inferior_derecha_rectangulo = (tw + 22, th + 22)
+    cv2.rectangle(overlay, punto_esquina_superior_izquierda_rectangulo, punto_esquina_inferior_derecha_rectangulo, COLOR_TUPLA_NEGRO, GROSOR_RELLENO_COMPLETO)
     cv2.addWeighted(overlay, 0.7, frame, 0.3, 0, frame)
     # Texto
     punto_texto = (15, th + 15)
     cv2.putText(frame, text, punto_texto, cv2.FONT_HERSHEY_SIMPLEX, ESCALA_FUENTE_SESENTA_PORCIENTO, COLOR_TUPLA_VERDE, GROSOR_CONTORNO_TEXTO_DOS_PIXELES, cv2.LINE_AA)
 
-# Dibuja panel de estadísticas estilo dashboard profesional
-def draw_stats_panel(frame, stats_dict, position='top-right'):
+def dibujar_panel_estadisticas(frame, estadisticas, posicion='top-right'):
     h, w = frame.shape[:2]
     # Calcular tamaño del panel
-    max_width = max([cv2.getTextSize(f'{k}: {v}', cv2.FONT_HERSHEY_SIMPLEX, ESCALA_FUENTE_CINCUENTA_PORCIENTO, GROSOR_CONTORNO_TEXTO_UN_PIXEL)[0][0] 
-                     for k, v in stats_dict.items()])
+    max_width = max([cv2.getTextSize(f'{k}: {v}', cv2.FONT_HERSHEY_SIMPLEX, ESCALA_FUENTE_CINCUENTA_PORCIENTO, GROSOR_CONTORNO_TEXTO_UN_PIXEL)[0][0] for k, v in estadisticas.items()])
     panel_width = max_width + 30
-    panel_height = len(stats_dict) * 25 + 20
-    if position == 'top-right':
+    panel_height = len(estadisticas) * 25 + 20
+    if posicion == 'top-right':
         x_start = w - panel_width - 15
         y_start = 15
     else:
@@ -102,19 +115,6 @@ def draw_stats_panel(frame, stats_dict, position='top-right'):
     cv2.addWeighted(overlay, 0.7, frame, 0.3, 0, frame)
     # Borde del panel
     cv2.rectangle(frame, punto_esquina_superior_izquierda_rectangulo, punto_esquina_inferior_derecha_rectangulo, COLOR_TUPLA_BLANCO, GROSOR_CONTORNO_TEXTO_DOS_PIXELES)
-    # Dibujar estadísticas
-    y_offset = y_start + 20
-    for key, value in stats_dict.items():
-        text = f'{key}: {value}'
-        cv2.putText(frame, text, (x_start + 10, y_offset), cv2.FONT_HERSHEY_SIMPLEX, ESCALA_FUENTE_CINCUENTA_PORCIENTO, COLOR_TUPLA_BLANCO, GROSOR_CONTORNO_TEXTO_UN_PIXEL, cv2.LINE_AA)
-        y_offset += 25
-
-# Wrapper para compatibilidad hacia atrás
-def draw_fps(frame, fps):
-    draw_fps_professional(frame, fps)
-
-# Wrapper para compatibilidad hacia atrás
-def draw_stats(frame, stats_dict):
-    draw_stats_panel(frame, stats_dict)
+    dibujar_estadisticas(frame, estadisticas, x_start, y_start)
 
 #endregion

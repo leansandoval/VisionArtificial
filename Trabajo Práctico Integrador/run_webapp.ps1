@@ -49,14 +49,32 @@ Write-Host "3. Define zonas en 'Editor de Zonas'"
 Write-Host "4. Presiona 'Iniciar' en el Dashboard para comenzar"
 Write-Host "`nPresiona Ctrl+C para detener el servidor`n"
 
-# Esperar 2 segundos antes de abrir el navegador
-Start-Sleep -Seconds 2
+# Iniciar un job en background que espere a que el servidor responda
+$uri = 'http://localhost:5000'
+$timeoutSeconds = 30
+Write-Host "Iniciando job que esperará a que $uri responda (timeout ${timeoutSeconds}s)..." -ForegroundColor Yellow
 
-# Abrir navegador automáticamente (en background)
-Start-Process "http://localhost:5000"
+# El job hará polling y abrirá el navegador cuando el servidor responda
+Start-Job -ScriptBlock {
+    param($uri, $timeout)
+    $start = Get-Date
+    while (((Get-Date) - $start).TotalSeconds -lt $timeout) {
+        try {
+            $resp = Invoke-WebRequest -Uri $uri -TimeoutSec 2 -ErrorAction Stop
+            if ($resp.StatusCode -ge 200 -and $resp.StatusCode -lt 400) {
+                Start-Process $uri
+                return
+            }
+        } catch {
+            Start-Sleep -Milliseconds 500
+        }
+    }
+    # Si timeout, abrir de todos modos (opcional)
+    Start-Process $uri
+} -ArgumentList $uri, $timeoutSeconds | Out-Null
 
-# Iniciar servidor Flask
-Write-Host "Iniciando servidor Flask..." -ForegroundColor Green
+# Iniciar servidor Flask en primer plano (para mostrar logs en la consola)
+Write-Host "Iniciando servidor Flask (verás los logs aquí)..." -ForegroundColor Green
 Write-Host "==========================================`n"
 
 python webapp\app.py

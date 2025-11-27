@@ -23,10 +23,10 @@ sys.path.insert(0, str(Path(__file__).parent.parent))
 from src.detector import Detector
 from src.zones import ZonesManager
 from src.alerts import Alerts
-from src.utils import FPSCounter
+from src.utils import ContadorFPS
 from src.geometric_filter import GeometricFilter
 from src.screen_capture import create_screen_source, list_monitors
-from src.overlay import draw_bbox, draw_zone, draw_tracking_point
+from src.overlay import dibujar_bounding_box, dibujar_zona, dibujar_punto_de_tracking
 
 # Importar trackers
 try:
@@ -209,7 +209,7 @@ def api_monitors():
         elif platform.system() == 'Windows':
             try:
                 # Obtener nombres de monitores usando PowerShell
-                ps_command = '''
+                ps_command = r'''
                 Get-CimInstance -Namespace root\wmi -ClassName WmiMonitorID | ForEach-Object {
                     $name = ($_.UserFriendlyName | Where-Object { $_ -ne 0 }) -join '' | ForEach-Object { [char]$_ }
                     if ($name) { $name } else { "Monitor" }
@@ -521,7 +521,7 @@ def run_detection():
             print('[Filtro] Filtrado geométrico activado')
         
         # Inicializar FPS counter
-        system_state['fps_counter'] = FPSCounter()
+        system_state['fps_counter'] = ContadorFPS()
         
         # Determinar source
         source_type = config['source_type']
@@ -598,7 +598,7 @@ def run_detection():
             # Dibujar zonas
             for zone_idx, poly in enumerate(system_state['zones_manager'].zones):
                 zone_name = system_state['zones_manager'].get_zone_name(zone_idx)
-                draw_zone(frame, poly, color=(0, 0, 255), zone_name=zone_name)
+                dibujar_zona(frame, poly, color=(0, 0, 255), zone_name=zone_name)
             
             # Procesar tracks
             current_in_zone = set()
@@ -657,10 +657,10 @@ def run_detection():
                     color = (0, 255, 0)  # Verde
                     label = f'ID:{bid} ({conf:.2f})'
                 
-                draw_bbox(frame, bbox, label=label, color=color, thickness=2)
+                dibujar_bounding_box(frame, bbox, label=label, color=color, thickness=2)
                 
                 point_color = (0, 0, 255) if is_valid_intrusion else ((0, 165, 255) if inside else (0, 255, 255))
-                draw_tracking_point(frame, (x, y), bid, color=point_color)
+                dibujar_punto_de_tracking(frame, (x, y), bid, color=point_color)
                 
                 # Alertas
                 if is_valid_intrusion and system_state['alerts']:

@@ -22,7 +22,7 @@ WINDOW = 'Zones Tool - Dibuja zonas sobre video en vivo'
 
 def main(source=0, out_path='zones.json'):
     zm = ZonesManager(out_path)
-    zm.load()
+    zm.cargar()
 
     # Abrir cámara, video o pantalla usando create_screen_source
     cap = create_screen_source(source)
@@ -145,7 +145,7 @@ def main(source=0, out_path='zones.json'):
             # Asegurar que tenemos nombres para todas las zonas existentes
             while len(zm.zone_names) < len(zm.zones):
                 zm.zone_names.append(f"Zona {len(zm.zone_names)+1}: Área Restringida")
-            zm.save()
+            zm.guardar()
             print(f'✓✓ Todas las zonas guardadas en {out_path} ({len(zm.zones)} zonas)')
         elif k == 32:  # ESPACIO
             if paused_frame is None:

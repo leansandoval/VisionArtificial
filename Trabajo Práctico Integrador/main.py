@@ -20,7 +20,7 @@ import time
 from src.alerts import Alerts
 from src.detector import Detector
 from src.geometric_filter import GeometricFilter
-from src.overlay import (dibujar_bounding_box, dibujar_zona, draw_fps_professional, draw_stats_panel, dibujar_punto_de_tracking)
+from src.overlay import (dibujar_bounding_box, dibujar_zona, dibujar_fps, dibujar_panel_estadisticas, dibujar_punto_de_tracking)
 from src.screen_capture import create_screen_source, list_monitors
 from src.tracker import SimpleTracker
 from src.utils import ContadorFPS
@@ -153,8 +153,8 @@ def main(args):
             last_tracks = tracks
 
         # overlay zones con nombres personalizados
-        for zone_idx, poly in enumerate(zones.zones):
-            zone_name = zones.get_zone_name(zone_idx)
+        for indice_zona, poly in enumerate(zones.zones):
+            zone_name = zones.obtener_nombre_zona(indice_zona)
             zone_color = (0, 0, 255)  # Rojo por defecto
             dibujar_zona(frame, poly, color=zone_color, zone_name=zone_name)
 
@@ -184,7 +184,7 @@ def main(args):
                         inside = True
                         break
             
-            # 🔹 APLICAR FILTRADO GEOMÉTRICO AVANZADO
+            # APLICAR FILTRADO GEOMÉTRICO AVANZADO
             is_valid_intrusion = False
             validation_result = None
             
@@ -217,7 +217,7 @@ def main(args):
                 color = (0, 255, 0)  # Verde si está fuera
                 label = f'Person ({conf:.2f})'
             
-            dibujar_bounding_box(frame, bbox, label=label, color=color, thickness=2)
+            dibujar_bounding_box(frame, bbox, label, color, grosor=2)
             
             # Punto de tracking en el centro
             if is_valid_intrusion:
@@ -241,18 +241,18 @@ def main(args):
             geo_filter.cleanup_old_tracks(active_track_ids)
         
         # Overlay de estadísticas profesional
-        draw_fps_professional(frame, fpsc.obtener_fps(), frame_number=frame_count)
+        dibujar_fps(frame, fpsc.obtener_fps(), frame_number=frame_count)
         
         # Panel de estadísticas
         active_zones = sum(1 for _ in zones.zones if len(current_in_zone) > 0)
         avg_detections = len(tracks)
-        stats = {
+        estadisticas = {
             'Fotograma': frame_count,
             'Zonas Activas': f'{active_zones}/{len(zones.zones)}',
             'Total Zonas': len(zones.zones),
             'Detecciones Prom': f'{avg_detections:.1f}'
         }
-        draw_stats_panel(frame, stats, position='top-right')
+        dibujar_panel_estadisticas(frame, estadisticas, posicion='top-right')
         
         cv2.imshow(win, frame)
         k = cv2.waitKey(1) & 0xFF
