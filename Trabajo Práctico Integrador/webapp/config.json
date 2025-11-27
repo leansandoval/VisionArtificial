@@ -1,6 +1,6 @@
 {
   "source_type": "webcam",
-  "source_value": "0",
+  "source_value": "1",
   "rtsp_url": "",
   "rtsp_transport": "tcp",
   "video_file": "",

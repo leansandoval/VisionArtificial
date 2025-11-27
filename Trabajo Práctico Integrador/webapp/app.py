@@ -137,10 +137,10 @@ def settings():
 def zones_editor():
     """Editor de zonas"""
     zm = ZonesManager()
-    zm.load()
+    zm.cargar()
     return render_template('zones.html', 
-                         zones=zm.zones, 
-                         zone_names=zm.zone_names,
+                         zones=zm.zonas, 
+                         zone_names=zm.nombres_zonas,
                          config=system_state['config'])
 
 # ==================== API ENDPOINTS ====================
@@ -163,18 +163,18 @@ def api_zones():
     zm = ZonesManager()
     
     if request.method == 'GET':
-        zm.load()
-        return jsonify({'zones': zm.zones, 'zone_names': zm.zone_names})
+        zm.cargar()
+        return jsonify({'zones': zm.zonas, 'zone_names': zm.nombres_zonas})
     
     elif request.method == 'POST':
         data = request.json
-        zm.zones = data.get('zones', [])
-        zm.zone_names = data.get('zone_names', [])
-        zm.save()
+        zm.zonas = data.get('zones', [])
+        zm.nombres_zonas = data.get('zone_names', [])
+        zm.guardar()
         
         # Recargar zonas si el sistema está corriendo
         if system_state['running'] and system_state['zones_manager']:
-            system_state['zones_manager'].load()
+            system_state['zones_manager'].cargar()
         
         return jsonify({'status': 'ok'})
 
@@ -503,8 +503,8 @@ def run_detection():
         
         # Inicializar zonas
         system_state['zones_manager'] = ZonesManager()
-        system_state['zones_manager'].load()
-        print(f'[Zonas] {len(system_state["zones_manager"].zones)} zona(s) cargada(s)')
+        system_state['zones_manager'].cargar()
+        print(f'[Zonas] {len(system_state["zones_manager"].zonas)} zona(s) cargada(s)')
         
         # Inicializar alertas
         system_state['alerts'] = Alerts(cooldown_seconds=config['cooldown'])
@@ -579,7 +579,7 @@ def run_detection():
                 else:
                     break
             
-            system_state['fps_counter'].tick()
+            system_state['fps_counter'].registrar_tiempo()
             frame_count += 1
             
             # Skip frames según configuración
@@ -596,8 +596,8 @@ def run_detection():
                 last_tracks = tracks
             
             # Dibujar zonas
-            for zone_idx, poly in enumerate(system_state['zones_manager'].zones):
-                zone_name = system_state['zones_manager'].get_zone_name(zone_idx)
+            for zone_idx, poly in enumerate(system_state['zones_manager'].zonas):
+                zone_name = system_state['zones_manager'].obtener_nombre_zona(zone_idx)
                 dibujar_zona(frame, poly, color=(0, 0, 255), zone_name=zone_name)
             
             # Procesar tracks
@@ -621,8 +621,8 @@ def run_detection():
                 
                 # Verificar zona
                 inside = False
-                if system_state['zones_manager'].zones:
-                    for poly in system_state['zones_manager'].zones:
+                if system_state['zones_manager'].zonas:
+                    for poly in system_state['zones_manager'].zonas:
                         if cv2.pointPolygonTest(np.array(poly, dtype=np.int32), (int(x), int(y)), False) >= 0:
                             inside = True
                             break
@@ -657,7 +657,7 @@ def run_detection():
                     color = (0, 255, 0)  # Verde
                     label = f'ID:{bid} ({conf:.2f})'
                 
-                dibujar_bounding_box(frame, bbox, label=label, color=color, thickness=2)
+                dibujar_bounding_box(frame, bbox, label=label, color=color, grosor=2)
                 
                 point_color = (0, 0, 255) if is_valid_intrusion else ((0, 165, 255) if inside else (0, 255, 255))
                 dibujar_punto_de_tracking(frame, (x, y), bid, color=point_color)
@@ -680,7 +680,7 @@ def run_detection():
                 system_state['geo_filter'].cleanup_old_tracks(active_track_ids)
             
             # Actualizar estadísticas
-            system_state['stats']['fps'] = round(system_state['fps_counter'].fps(), 1)
+            system_state['stats']['fps'] = round(system_state['fps_counter'].obtener_fps(), 1)
             system_state['stats']['frame_count'] = frame_count
             system_state['stats']['detections'] = len(dets)
             system_state['stats']['alerts'] = total_alerts
