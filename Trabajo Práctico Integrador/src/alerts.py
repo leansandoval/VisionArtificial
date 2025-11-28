@@ -11,13 +11,13 @@ try:
 except Exception:
     _TWILIO_AVAILABLE = False
 
-import winsound
-
 class Alerts:
     def __init__(self, cooldown_seconds: int = 10):
         self.cooldown = cooldown_seconds
         self.last_alert_time = {}  # key -> timestamp
         self.lock = Lock()
+        # Flash visual (punto rojo en pantalla) persistente tras una alerta
+        self.flash_on = False
         # Twilio client init
         if _TWILIO_AVAILABLE:
             sid = os.environ.get('TWILIO_ACCOUNT_SID')
@@ -39,11 +39,16 @@ class Alerts:
             return False
 
     def local_beep(self):
-        # Simple beep en Windows
-        try:
-            winsound.Beep(1000, 300)
-        except Exception:
-            pass
+        # Reemplazo del beep: activar flash visual persistente (punto rojo)
+        self.flash_on = True
+
+    def set_flash_state(self, state: bool):
+        """Permite activar/desactivar el flash visual segun haya personas en zona."""
+        self.flash_on = state
+
+    def should_flash(self) -> bool:
+        """Indica si el punto rojo debe mostrarse/parpadear en este momento."""
+        return self.flash_on
 
     def send_whatsapp(self, body: str):
         if not self.twilio:
