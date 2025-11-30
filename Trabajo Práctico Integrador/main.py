@@ -23,7 +23,7 @@ from src.overlay import (
     dibujar_bounding_box,
     dibujar_fps,
     dibujar_panel_estadisticas,
-    dibujar_zona,
+    dibujar_zona
 )
 from src.screen_capture import create_screen_source, list_monitors
 from src.tracker import SimpleTracker
@@ -263,8 +263,8 @@ def main(args):
 
         # Flash visual de alerta (punto rojo persistente tras una alerta)
         if alerts.should_flash():
-            cv2.circle(frame, (30, 60), 20, (0, 0, 255), -1)
-            cv2.circle(frame, (30, 60), 24, (0, 0, 255), 2)
+            cv2.circle(frame, (35, 70), 20, (0, 0, 255), -1)
+            cv2.circle(frame, (35, 70), 24, (0, 0, 255), 2)
 
         cv2.imshow(window_title, frame)
         key = cv2.waitKey(1) & 0xFF

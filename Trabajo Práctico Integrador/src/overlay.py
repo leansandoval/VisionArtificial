@@ -104,29 +104,4 @@ def dibujar_panel_estadisticas(frame, estadisticas, posicion="top-right"):
     cv2.rectangle(frame, punto_esquina_superior_izquierda_rectangulo, punto_esquina_inferior_derecha_rectangulo, COLOR_TUPLA_BLANCO, GROSOR_DOS_PIXELES)
     dibujar_estadisticas(frame, estadisticas, x_start, y_start)
 
-# Punto de alerta (esquina superior izquierda) - helper
-def dibujar_punto_alerta(frame, x=8, y=8, size=26, color=(0,0,255), border_color=(20,0,0), border_thickness=3, offset_below_fps=True, fps_area_height=36):
-    """
-    Dibuja un punto de alerta en la esquina superior izquierda del frame.
-    - offset_below_fps: si True, desplaza el punto hacia abajo para no solaparse con el HUD de FPS.
-    - fps_area_height: altura estimada del HUD de FPS en píxeles.
-    """
-    if frame is None:
-        return
-    h, w = frame.shape[:2]
-    # Ajustar posición si se solicita evitar solapamiento con el HUD de FPS
-    draw_y = y + (fps_area_height + 6 if offset_below_fps else 0)
-    # Calcular centro
-    cx = int(max(0, min(w-1, x + size // 2)))
-    cy = int(max(0, min(h-1, draw_y + size // 2)))
-    radius = max(2, int(size / 2))
-    # Dibujar borde exterior
-    try:
-        cv2.circle(frame, (cx, cy), radius + border_thickness, border_color, -1, lineType=cv2.LINE_AA)
-        # Dibujar círculo interior (color de alerta)
-        cv2.circle(frame, (cx, cy), radius, color, -1, lineType=cv2.LINE_AA)
-    except Exception:
-        # Failsafe: no hacer nada si el frame es inválido
-        pass
-
 # endregion
