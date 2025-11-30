@@ -5,12 +5,10 @@ import json
 import numpy as np
 import os
 from typing import List, Tuple
+from src.constantes import ARCHIVO_ZONAS, ETIQUETA_NOMBRES_ZONAS, ETIQUETA_ZONAS
 
 #region Constantes
 
-ARCHIVO_ZONAS = 'zonas.json'
-ETIQUETA_ZONAS = 'zonas'
-ETIQUETA_NOMBRES_ZONAS = 'nombres_zonas'
 MODO_APERTURA_ESCRITURA_ARCHIVO = 'w'
 MODO_APERTURA_LECTURA_ARCHIVO = 'r'
 UTF8 = 'utf-8'

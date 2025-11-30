@@ -18,7 +18,7 @@ try {
 # Verificar dependencias web
 Write-Host "`nVerificando dependencias web..." -ForegroundColor Yellow
 
-$webRequirements = "webapp\requirements-web.txt"
+$webRequirements = "requirements.txt"
 if (Test-Path $webRequirements) {
     Write-Host "Instalando dependencias Flask..." -ForegroundColor Yellow
     pip install -r $webRequirements --quiet
@@ -28,7 +28,7 @@ if (Test-Path $webRequirements) {
         Write-Host "⚠ Error instalando dependencias. Continuando..." -ForegroundColor Yellow
     }
 } else {
-    Write-Host "⚠ No se encontró requirements-web.txt" -ForegroundColor Yellow
+    Write-Host "⚠ No se encontró requirements.txt" -ForegroundColor Yellow
 }
 
 # Información del dashboard

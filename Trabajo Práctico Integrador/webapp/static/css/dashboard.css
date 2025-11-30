@@ -31,6 +31,22 @@ body {
     justify-content: center;
 }
 
+/* Punto de alerta DOM: esquina superior izquierda, fuera del flujo */
+.alert-dot{
+    position: absolute;
+    top: 8px;
+    left: 8px;
+    width: 26px;
+    height: 26px;
+    border-radius: 50%;
+    background: #d32f2f;
+    box-shadow: 0 0 0 3px rgba(128,0,0,0.6);
+    z-index: 9999;
+    pointer-events: none;
+    opacity: 0.98;
+    display: none;
+}
+
 #video-stream {
     max-width: 100%;
     height: auto;

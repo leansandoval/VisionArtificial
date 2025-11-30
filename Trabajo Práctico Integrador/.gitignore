@@ -20,7 +20,7 @@ venv/
 weights/
 
 # Configuración local
-zones.json
+zonas.json
 secrets.env
 
 # Logs

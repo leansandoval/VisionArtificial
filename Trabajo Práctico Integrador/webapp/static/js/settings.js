@@ -241,7 +241,6 @@ function applyConfigToForm(config) {
     minAreaValue.textContent = config.min_bbox_area || 2000;
     
     // Alerts
-    document.getElementById('use_whatsapp').checked = config.use_whatsapp || false;
     cooldownInput.value = config.cooldown || 10;
     cooldownValue.textContent = config.cooldown || 10;
 }
@@ -479,7 +478,6 @@ async function handleSubmit(e) {
         min_time_zone: parseFloat(minTimeInput.value),
         min_bbox_area: parseInt(minAreaInput.value),
         
-        use_whatsapp: document.getElementById('use_whatsapp').checked,
         cooldown: parseInt(cooldownInput.value),
         max_retries: 3
     };
@@ -534,7 +532,6 @@ function handleReset() {
             use_geometric_filter: true,
             min_time_zone: 2.0,
             min_bbox_area: 2000,
-            use_whatsapp: false,
             cooldown: 10
         };
         

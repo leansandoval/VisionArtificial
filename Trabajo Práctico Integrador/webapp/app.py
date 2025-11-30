@@ -26,7 +26,7 @@ from src.alerts import Alerts
 from src.utils import ContadorFPS
 from src.geometric_filter import GeometricFilter
 from src.screen_capture import create_screen_source, list_monitors
-from src.overlay import dibujar_bounding_box, dibujar_zona, dibujar_punto_de_tracking
+from src.overlay import dibujar_bounding_box, dibujar_zona, dibujar_punto_alerta
 
 # Importar trackers
 try:
@@ -77,7 +77,6 @@ system_state = {
         'use_geometric_filter': True,
         'min_time_zone': 2.0,
         'min_bbox_area': 2000,
-        'use_whatsapp': False,
         'cooldown': 10,
         'timeout': 10000,
         'max_retries': 3
@@ -659,15 +658,13 @@ def run_detection():
                 
                 dibujar_bounding_box(frame, bbox, label=label, color=color, grosor=2)
                 
-                point_color = (0, 0, 255) if is_valid_intrusion else ((0, 165, 255) if inside else (0, 255, 255))
-                dibujar_punto_de_tracking(frame, (x, y), bid, color=point_color)
+                # tracking point removed to match CLI visuals (only bounding box + flash)
                 
                 # Alertas
                 if is_valid_intrusion and system_state['alerts']:
                     if system_state['alerts'].alert_for_track(
                         bid,
-                        f'⚠️ INTRUSION: Persona {bid} en zona',
-                        use_whatsapp=config['use_whatsapp']
+                        f'⚠️ INTRUSION: Persona {bid} en zona'
                     ):
                         total_alerts += 1
                         socketio.emit('alert', {
@@ -679,6 +676,10 @@ def run_detection():
             if config['use_geometric_filter'] and system_state['geo_filter']:
                 system_state['geo_filter'].cleanup_old_tracks(active_track_ids)
             
+            # Actualizar estado del flash visual segun presencia en zona (coincide con CLI)
+            if system_state.get('alerts'):
+                system_state['alerts'].set_flash_state(len(current_in_zone) > 0)
+
             # Actualizar estadísticas
             system_state['stats']['fps'] = round(system_state['fps_counter'].obtener_fps(), 1)
             system_state['stats']['frame_count'] = frame_count
@@ -688,6 +689,25 @@ def run_detection():
             system_state['stats']['filtered'] = filtered_count
             system_state['stats']['tracks_active'] = len(tracks)
             
+            # Flash visual de alerta (punto rojo persistente tras una alerta)
+            # Nota: deshabilitado en la versión web para evitar duplicar el indicador DOM.
+            # El indicador DOM (`#alert-dot`) se muestra/oculta desde `webapp/static/js/main.js`.
+            # Si se desea habilitar el punto dentro del frame para ejecuciones CLI (p.ej. main.py),
+            # mover/activar esta llamada en el runner CLI en lugar de aquí.
+            # if system_state.get('alerts') and system_state['alerts'].should_flash():
+            #     try:
+            #         # Dibujar punto de alerta en esquina superior izquierda
+            #         dibujar_punto_alerta(frame,
+            #                              x=8, y=8,
+            #                              size=26,
+            #                              color=(0,0,255),
+            #                              border_color=(20,0,0),
+            #                              border_thickness=3,
+            #                              offset_below_fps=True,
+            #                              fps_area_height=36)
+            #     except Exception:
+            #         pass
+
             # Convertir frame a JPEG para streaming
             _, buffer = cv2.imencode('.jpg', frame, [cv2.IMWRITE_JPEG_QUALITY, 80])
             frame_base64 = base64.b64encode(buffer).decode('utf-8')

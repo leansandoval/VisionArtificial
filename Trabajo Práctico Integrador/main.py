@@ -124,7 +124,7 @@ def main(args):
     print(f"Zonas configuradas: {len(zones.zonas)}")
     print(f"Umbral de confianza: {args.conf}")
     print(f"Porcentaje minimo de solapamiento bbox/zona: {args.zone_overlap_ratio * 100:.0f}%")
-    print(f"Alertas WhatsApp: {'SI' if args.use_whatsapp else 'NO (solo local)'}")
+    print(f"Alertas locales: SI (solo local)")
     print("Presiona Q o ESC para salir")
     print("=" * 60 + "\n")
 
@@ -240,7 +240,6 @@ def main(args):
                 if alerts.alert_for_track(
                     track_id,
                     f"[ALERTA] INTRUSION: Persona {track_id} detectada en zona restringida",
-                    use_whatsapp=args.use_whatsapp,
                 ):
                     total_alerts += 1
 
@@ -303,10 +302,9 @@ if __name__ == "__main__":
         "Ejemplos: 0, video.mp4, screen, screen:1, screen:region:100,100,800,600",
     )
     parser.add_argument("--weights", default=None, help="Ruta a pesos YOLO (ej: yolov11.pt o yolov8n.pt)")
-    parser.add_argument("--zones", default="zones.json", help="Archivo JSON con zonas")
+    parser.add_argument("--zones", default="zonas.json", help="Archivo JSON con zonas")
     parser.add_argument("--conf", type=float, default=0.53, help="Umbral de confianza")
     parser.add_argument("--cooldown", type=int, default=10, help="Cooldown de alertas por track (s)")
-    parser.add_argument("--use_whatsapp", action="store_true", help="Enviar alerta por WhatsApp via Twilio (requiere env vars)")
     parser.add_argument(
         "--imgsz",
         type=int,

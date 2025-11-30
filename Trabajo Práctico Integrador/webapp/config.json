@@ -1,6 +1,6 @@
 {
   "source_type": "webcam",
-  "source_value": "1",
+  "source_value": "0",
   "rtsp_url": "",
   "rtsp_transport": "tcp",
   "video_file": "",
@@ -13,7 +13,6 @@
   "use_geometric_filter": true,
   "min_time_zone": 2,
   "min_bbox_area": 2000,
-  "use_whatsapp": false,
   "cooldown": 10,
   "timeout": 10000,
   "max_retries": 3

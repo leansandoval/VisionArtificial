@@ -258,14 +258,6 @@
                                     <i class="bi bi-bell"></i> Sistema de Alertas
                                 </h5>
                                 
-                                <div class="form-check form-switch mb-3">
-                                    <input class="form-check-input" type="checkbox" id="use_whatsapp" {{ 'checked' if config.use_whatsapp else '' }}>
-                                    <label class="form-check-label" for="use_whatsapp">
-                                        Activar alertas por WhatsApp (Twilio)
-                                    </label>
-                                    <small class="text-muted d-block">Requiere configurar variables de entorno para Twilio</small>
-                                </div>
-
                                 <div class="mb-3">
                                     <label class="form-label">
                                         Cooldown entre alertas: <span id="cooldown-value">{{ config.cooldown }}</span>s

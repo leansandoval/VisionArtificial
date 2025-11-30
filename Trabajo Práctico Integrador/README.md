@@ -47,32 +47,9 @@ pip install -r webapp\requirements-web.txt
 - `numpy` - Operaciones numéricas
 - `mss` - Captura de pantalla
 - `flask`, `flask-socketio` - Dashboard web (opcional)
-- `twilio` - Alertas WhatsApp (opcional)
+<!-- Twilio dependency removed -->
 
-### **3. Configurar Twilio (Opcional - Solo para WhatsApp)**
-
-**Habilitar rutas largas en Windows:**
-1. Abrir PowerShell como Administrador
-2. Ejecutar:
-   ```powershell
-   New-ItemProperty -Path "HKLM:\SYSTEM\CurrentControlSet\Control\FileSystem" -Name "LongPathsEnabled" -Value 1 -PropertyType DWORD -Force
-   ```
-3. Reiniciar terminal
-
-**Instalar Twilio:**
-```powershell
-pip install twilio
-```
-
-**Variables de entorno:**
-```powershell
-$env:TWILIO_ACCOUNT_SID = "ACxxxx"
-$env:TWILIO_AUTH_TOKEN = "tu_token"
-$env:TWILIO_WHATSAPP_FROM = "whatsapp:+14155238886"
-$env:TWILIO_WHATSAPP_TO = "whatsapp:+5491112345678"
-```
-
-> **Nota:** El sistema funciona perfectamente sin Twilio usando alertas locales (beep + log)
+<!-- Se ha eliminado la sección de configuración de Twilio/WhatsApp. El sistema funciona con alertas locales (beep + log). -->
 
 ---
 
@@ -105,9 +82,8 @@ $env:TWILIO_WHATSAPP_TO = "whatsapp:+5491112345678"
    - Tiempo mínimo en zona: 1-10s
    - Área mínima bbox: 500-10000px²
 
-4. **Alertas:**
+   4. **Alertas:**
    - ✅ Alertas locales (beep)
-   - ✅ WhatsApp (Twilio)
    - Cooldown: 1-60s
 
 5. **Guardar Configuración**
@@ -193,8 +169,8 @@ python main.py --source 0 --imgsz 416 --skip_frames 1 --use_geometric_filter
 # Con cámara IP
 python main.py --source "rtsp://admin:pass@IP:554/stream" --tracker bytetrack
 
-# Con alertas WhatsApp
-python main.py --source 0 --use_whatsapp --use_geometric_filter
+# Con filtrado geométrico
+python main.py --source 0 --use_geometric_filter
 
 # Con modelo personalizado
 python main.py --source video.mp4 --weights path/to/yolov11.pt
@@ -235,7 +211,7 @@ http://192.168.1.100:8080/video
 | `--weights` | path | `yolov8n.pt` | Modelo YOLO personalizado |
 | `--conf` | 0.1-0.9 | `0.3` | Confianza mínima |
 | `--tracker` | `bytetrack`/`simple` | `bytetrack` | Algoritmo tracking |
-| `--zones` | path | `zones.json` | Archivo de zonas |
+| `--zones` | path | `zonas.json` | Archivo de zonas |
 
 ### **Optimización de Rendimiento**
 
@@ -288,7 +264,6 @@ python main.py --source 0 --use_geometric_filter --min_time_zone 3.0 --min_bbox_
 
 | Parámetro | Tipo | Descripción |
 |-----------|------|-------------|
-| `--use_whatsapp` | flag | Activar alertas WhatsApp |
 | `--cooldown` | 1-60s | Tiempo entre alertas (default: 10) |
 
 **Alertas locales:** Siempre activas (beep + log)
@@ -354,7 +329,7 @@ python main.py --tracker simple
 
 ## 📁 Gestión de Zonas
 
-### **Formato JSON** (`zones.json`)
+### **Formato JSON** (`zonas.json`)
 
 ```json
 {
@@ -516,12 +491,7 @@ python main.py --source 0 --imgsz 416 --skip_frames 3 --conf 0.5
 - Desactivar filtrado geométrico temporalmente
 - Cerrar otras aplicaciones
 
-#### **Twilio: Rutas largas**
-```powershell
-# PowerShell como Admin
-New-ItemProperty -Path "HKLM:\SYSTEM\CurrentControlSet\Control\FileSystem" -Name "LongPathsEnabled" -Value 1 -PropertyType DWORD -Force
-```
-Reiniciar terminal después.
+<!-- Twilio troubleshooting removed -->
 
 ---
 
@@ -570,12 +540,11 @@ Estadísticas de Filtrado Geométrico:
 
 ---
 
-## 📚 Recursos Adicionales
 
 ### **Archivos de Configuración**
 - `requirements.txt` - Dependencias base
 - `webapp/requirements-web.txt` - Dependencias web
-- `zones.json` - Zonas configuradas
+- `zonas.json` - Zonas configuradas
 - `webapp/config.json` - Configuración dashboard
 
 ### **Scripts Auxiliares**
@@ -620,7 +589,7 @@ Estadísticas de Filtrado Geométrico:
 
 1. **Compatibilidad:** No requiere GPU (optimizado para CPU)
 2. **Configuración persistente:** Dashboard web guarda en `webapp/config.json`
-3. **Zonas compartidas:** Mismo `zones.json` para CLI y web
+3. **Zonas compartidas:** Mismo `zonas.json` para CLI y web
 4. **Multi-sesión:** Dashboard soporta múltiples navegadores simultáneos
 5. **Sin modificar código:** Dashboard es un wrapper sobre módulos existentes
 
@@ -665,7 +634,6 @@ python main.py `
     --min_bbox_area 3000 `
     --imgsz 416 `
     --skip_frames 2 `
-    --use_whatsapp
 ```
 
 ### **Caso 3: Demo Rápida con Webcam**
