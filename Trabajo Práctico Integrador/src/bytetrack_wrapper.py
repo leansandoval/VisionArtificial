@@ -16,57 +16,49 @@ except ImportError:
 class ByteTrackWrapper:
     
     # Args:
-    # * track_activation_threshold: Umbral de confianza para activar tracking
-    # * lost_track_buffer: Número de frames para mantener tracks perdidos
-    # * minimum_matching_threshold: Umbral de IoU para matching
-    # * frame_rate: FPS esperado del video
+    # * umbral_activacion_track: Umbral de confianza para activar tracking
+    # * buffer_tracks_perdidos: Número de frames para mantener tracks perdidos
+    # * umbral_minimo_emparejamiento: Umbral de IoU para matching
+    # * tasa_frame: FPS esperado del video
     def __init__(self,
-                 track_activation_threshold: float = 0.25,
-                 lost_track_buffer: int = 30, 
-                 minimum_matching_threshold: float = 0.8,
-                 frame_rate: int = 30):
+                 umbral_activacion_track: float = 0.25,
+                 buffer_tracks_perdidos: int = 30, 
+                 umbral_minimo_emparejamiento: float = 0.8,
+                 tasa_frame: int = 30):
         if not SUPERVISION_AVAILABLE:
             raise ImportError("supervision library no disponible. Instalar con: pip install supervision")
         self.tracker = sv.ByteTrack(
-            track_activation_threshold=track_activation_threshold,
-            lost_track_buffer=lost_track_buffer,
-            minimum_matching_threshold=minimum_matching_threshold,
-            frame_rate=frame_rate
+            track_activation_threshold=umbral_activacion_track,
+            lost_track_buffer=buffer_tracks_perdidos,
+            minimum_matching_threshold=umbral_minimo_emparejamiento,
+            frame_rate=tasa_frame
         )
     
     # Actualiza el tracker con nuevas detecciones.
-    # Args: detections: Lista de dicts con 'bbox' y 'conf'
+    # Args: detecciones: Lista de dicts con 'bbox' y 'conf'
     # Returns: Lista de tracks con 'track_id', 'bbox', 'conf'
-    def update(self, detections: List[Dict]) -> List[Dict]:
-        if len(detections) == 0:
+    def actualizar(self, detecciones: List[Dict]) -> List[Dict]:
+        if len(detecciones) == 0:
             # Actualizar con detecciones vacías para mantener tracks existentes
-            empty_detections = sv.Detections.empty()
-            tracked = self.tracker.update_with_detections(empty_detections)
+            detecciones_vacias = sv.Detections.empty()
+            tracked = self.tracker.update_with_detections(detecciones_vacias)
             return []
         # Convertir detections al formato Supervision
-        xyxy = np.array([d['bbox'] for d in detections], dtype=np.float32)
-        confidence = np.array([d['conf'] for d in detections], dtype=np.float32)
+        xyxy = np.array([d['bbox'] for d in detecciones], dtype=np.float32)
+        confianza = np.array([d['conf'] for d in detecciones], dtype=np.float32)
         # Crear objeto Detections de supervision
-        sv_detections = sv.Detections(
-            xyxy=xyxy,
-            confidence=confidence,
-            class_id=np.zeros(len(detections), dtype=int)  # Todos son clase 0 (person)
-        )
+        # Todos son clase 0 (person)
+        detecciones_sv = sv.Detections(xyxy=xyxy, confidence=confianza, class_id=np.zeros(len(detecciones), dtype=int))
         # Ejecutar ByteTrack
-        tracked_detections = self.tracker.update_with_detections(sv_detections)
+        detecciones_rastreadas = self.tracker.update_with_detections(detecciones_sv)
         # Convertir de vuelta a nuestro formato
         tracks = []
-        if tracked_detections.tracker_id is not None:
-            for i in range(len(tracked_detections.xyxy)):
-                bbox = tracked_detections.xyxy[i].tolist()
-                track_id = int(tracked_detections.tracker_id[i])
-                conf = float(tracked_detections.confidence[i]) if tracked_detections.confidence is not None else 1.0
-                tracks.append({
-                    'track_id': track_id,
-                    'bbox': bbox,
-                    'conf': conf,
-                    'lost': 0  # ByteTrack maneja esto internamente
-                })
+        if detecciones_rastreadas.tracker_id is not None:
+            for i in range(len(detecciones_rastreadas.xyxy)):
+                bbox = detecciones_rastreadas.xyxy[i].tolist()
+                id_track = int(detecciones_rastreadas.tracker_id[i])
+                confianza = float(detecciones_rastreadas.confidence[i]) if detecciones_rastreadas.confidence is not None else 1.0
+                tracks.append({'track_id': id_track, 'bbox': bbox, 'conf': confianza, 'lost': 0 })
         return tracks
 
 if __name__ == '__main__':

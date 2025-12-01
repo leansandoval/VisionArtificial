@@ -510,10 +510,10 @@ def run_detection():
         # Inicializar tracker
         if config['tracker'] == 'bytetrack' and BYTETRACK_AVAILABLE:
             system_state['tracker'] = ByteTrackWrapper(
-                track_activation_threshold=0.25,
-                lost_track_buffer=30,
-                minimum_matching_threshold=0.8,
-                frame_rate=30
+                umbral_activacion_track=0.25,
+                buffer_tracks_perdidos=30,
+                umbral_minimo_emparejamiento=0.8,
+                tasa_frame=30
             )
             tracker_name = 'ByteTrack'
         else:
@@ -627,13 +627,13 @@ def run_detection():
                 last_dets = dets
                 
                 # Tracking
-                tracks = system_state['tracker'].update(dets)
+                tracks = system_state['tracker'].actualizar(dets)
                 last_tracks = tracks
             
             # Dibujar zonas
             for zone_idx, poly in enumerate(system_state['zones_manager'].zonas):
                 zone_name = system_state['zones_manager'].obtener_nombre_zona(zone_idx)
-                dibujar_zona(frame, poly, color=(0, 0, 255), zone_name=zone_name)
+                dibujar_zona(frame, poly, color=(0, 0, 255), nombre_zona=zone_name)
             
             # Procesar tracks
             current_in_zone = set()
@@ -690,7 +690,7 @@ def run_detection():
                     color = (0, 255, 0)  # Verde
                     label = f'ID:{bid} ({conf:.2f})'
                 
-                dibujar_bounding_box(frame, bbox, label=label, color=color, grosor=2)
+                dibujar_bounding_box(frame, bbox, etiqueta=label, color=color, grosor=2)
                 
                 # tracking point removed to match CLI visuals (only bounding box + flash)
                 

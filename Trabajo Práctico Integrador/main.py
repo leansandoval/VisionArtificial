@@ -58,10 +58,10 @@ def main(args):
     # Seleccionar tracker segun parametro
     if args.tracker == "bytetrack" and BYTETRACK_AVAILABLE:
         tracker = ByteTrackWrapper(
-            track_activation_threshold=0.25,
-            lost_track_buffer=30,
-            minimum_matching_threshold=0.8,
-            frame_rate=30,
+            umbral_activacion_track=0.25,
+            buffer_tracks_perdidos=30,
+            umbral_minimo_emparejamiento=0.8,
+            tasa_frame=30,
         )
         tracker_name = "ByteTrack"
     else:
@@ -163,14 +163,14 @@ def main(args):
             detections = detector.detectar(frame)
             last_dets = detections
 
-            tracks = tracker.update(detections)
+            tracks = tracker.actualizar(detections)
             last_tracks = tracks
 
         # Overlay de zonas con nombres personalizados
         for indice_zona, poly in enumerate(zones_manager.zonas):
             zone_name = zones_manager.obtener_nombre_zona(indice_zona)
             zone_color = (0, 0, 255)
-            dibujar_zona(frame, poly, color=zone_color, zone_name=zone_name)
+            dibujar_zona(frame, poly, color=zone_color, nombre_zona=zone_name)
 
         current_in_zone = set()
         active_track_ids = [track["track_id"] for track in tracks]
@@ -223,7 +223,7 @@ def main(args):
                 color = (0, 255, 0)
                 label = f"Person ({confidence:.2f})"
 
-            dibujar_bounding_box(frame, bbox, label, color, grosor=2)
+            dibujar_bounding_box(frame, bbox, etiqueta=label, color=color, grosor=2)
 
             if is_valid_intrusion:
                 if alerts.alertar_por_track(
@@ -238,7 +238,7 @@ def main(args):
         # Actualizar estado del flash visual segun presencia en zona
         alerts.establecer_estado_flash(len(current_in_zone) > 0)
 
-        dibujar_fps(frame, fps_counter.obtener_fps(), frame_number=frame_count)
+        dibujar_fps(frame, fps_counter.obtener_fps(), numero_de_frame=frame_count)
 
         active_zones = sum(1 for _ in zones_manager.zonas if len(current_in_zone) > 0)
         avg_detections = len(tracks)
