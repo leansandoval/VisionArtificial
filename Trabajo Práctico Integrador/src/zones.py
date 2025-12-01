@@ -50,11 +50,3 @@ class ZonesManager:
         if indice < len(self.nombres_zonas):
             return self.nombres_zonas[indice]
         return f"Zona {indice + 1}: Área Restringida"
-
-    # Devuelve True si point está dentro de alguna zona
-    def punto_en_zona(self, point: Tuple[int,int]):
-        x, y = point
-        for poly in self.zonas:
-            if cv2.pointPolygonTest(np.array(poly, dtype=np.int32), (int(x), int(y)), False) >= 0:
-                return True
-        return False

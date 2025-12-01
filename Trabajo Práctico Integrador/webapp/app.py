@@ -26,7 +26,7 @@ from src.alerts import Alerts
 from src.utils import ContadorFPS
 from src.geometric_filter import GeometricFilter
 from src.screen_capture import create_screen_source, list_monitors
-from src.overlay import dibujar_bounding_box, dibujar_zona, dibujar_punto_alerta
+from src.overlay import dibujar_bounding_box, dibujar_zona
 
 # Importar trackers
 try:
@@ -77,6 +77,7 @@ system_state = {
         'use_geometric_filter': True,
         'min_time_zone': 2.0,
         'min_bbox_area': 2000,
+        'zone_overlap_ratio': 0.30,
         'cooldown': 10,
         'timeout': 10000,
         'max_retries': 3
@@ -469,6 +470,27 @@ def bbox_center(b):
     x1, y1, x2, y2 = b
     return int((x1+x2)/2), int((y1+y2)/2)
 
+
+def bbox_zone_overlap_ratio(bbox, zone_mask):
+    """Calcula el porcentaje de solapamiento del bbox con la mascara de zonas.
+
+    Devuelve un float entre 0.0 y 1.0.
+    """
+    if zone_mask is None:
+        return 0.0
+    height, width = zone_mask.shape[:2]
+    x1 = max(int(bbox[0]), 0)
+    y1 = max(int(bbox[1]), 0)
+    x2 = min(int(bbox[2]), width)
+    y2 = min(int(bbox[3]), height)
+    box_width = x2 - x1
+    box_height = y2 - y1
+    if box_width <= 0 or box_height <= 0:
+        return 0.0
+    bbox_area = float(box_width * box_height)
+    zone_area = float(np.count_nonzero(zone_mask[y1:y2, x1:x2]))
+    return zone_area / bbox_area if bbox_area > 0 else 0.0
+
 def run_detection():
     """
     Ejecuta la detección usando TU CÓDIGO EXISTENTE.
@@ -561,6 +583,8 @@ def run_detection():
         last_dets = []
         last_tracks = []
         total_alerts = 0
+        zone_mask = None
+        last_zone_count = 0
         
         # Loop principal
         while system_state['running']:
@@ -580,6 +604,18 @@ def run_detection():
             
             system_state['fps_counter'].registrar_tiempo()
             frame_count += 1
+
+            # Construir/reconstruir máscara combinada de zonas según tamaño del frame
+            if (zone_mask is None) or (zone_mask.shape[0] != frame.shape[0]) or (zone_mask.shape[1] != frame.shape[1]) or (last_zone_count != len(system_state['zones_manager'].zonas)):
+                if system_state['zones_manager'].zonas:
+                    height, width = frame.shape[:2]
+                    zone_mask = np.zeros((height, width), dtype=np.uint8)
+                    for poly in system_state['zones_manager'].zonas:
+                        cv2.fillPoly(zone_mask, [np.array(poly, dtype=np.int32)], 255)
+                    last_zone_count = len(system_state['zones_manager'].zonas)
+                else:
+                    zone_mask = None
+                    last_zone_count = 0
             
             # Skip frames según configuración
             if config['skip_frames'] > 0 and frame_count % (config['skip_frames'] + 1) != 0:
@@ -618,13 +654,11 @@ def run_detection():
                             conf = d['conf']
                             break
                 
-                # Verificar zona
+                # Verificar zona usando solapamiento bbox/mascara de zonas (más eficiente que pointPolygonTest)
                 inside = False
-                if system_state['zones_manager'].zonas:
-                    for poly in system_state['zones_manager'].zonas:
-                        if cv2.pointPolygonTest(np.array(poly, dtype=np.int32), (int(x), int(y)), False) >= 0:
-                            inside = True
-                            break
+                if system_state['zones_manager'].zonas and zone_mask is not None:
+                    overlap_ratio = bbox_zone_overlap_ratio(bbox, zone_mask)
+                    inside = overlap_ratio >= config.get('zone_overlap_ratio', 0.30)
                 
                 # Filtrado geométrico
                 is_valid_intrusion = False
@@ -689,25 +723,6 @@ def run_detection():
             system_state['stats']['filtered'] = filtered_count
             system_state['stats']['tracks_active'] = len(tracks)
             
-            # Flash visual de alerta (punto rojo persistente tras una alerta)
-            # Nota: deshabilitado en la versión web para evitar duplicar el indicador DOM.
-            # El indicador DOM (`#alert-dot`) se muestra/oculta desde `webapp/static/js/main.js`.
-            # Si se desea habilitar el punto dentro del frame para ejecuciones CLI (p.ej. main.py),
-            # mover/activar esta llamada en el runner CLI en lugar de aquí.
-            # if system_state.get('alerts') and system_state['alerts'].should_flash():
-            #     try:
-            #         # Dibujar punto de alerta en esquina superior izquierda
-            #         dibujar_punto_alerta(frame,
-            #                              x=8, y=8,
-            #                              size=26,
-            #                              color=(0,0,255),
-            #                              border_color=(20,0,0),
-            #                              border_thickness=3,
-            #                              offset_below_fps=True,
-            #                              fps_area_height=36)
-            #     except Exception:
-            #         pass
-
             # Convertir frame a JPEG para streaming
             _, buffer = cv2.imencode('.jpg', frame, [cv2.IMWRITE_JPEG_QUALITY, 80])
             frame_base64 = base64.b64encode(buffer).decode('utf-8')

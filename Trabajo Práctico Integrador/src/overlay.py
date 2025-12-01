@@ -3,14 +3,6 @@ import cv2
 import numpy as np
 from src.constantes import *
 
-# region Constantes
-
-RADIO_CIRCULO_EXTERIOR_ID_TRACKING = 8
-RADIO_CIRCULO_INTERIOR_ID_TRACKING = 4
-TRANSPARENCIA_ZONA = 0.1
-
-# endregion
-
 # region Funciones Auxiliares
 
 def dibujar_texto_bounding_box(frame, label, color, x1, y1):
@@ -39,14 +31,6 @@ def dibujar_bounding_box(frame, bounding_box, label=None, color=COLOR_TUPLA_VERD
     cv2.rectangle(frame, (x1, y1), (x2, y2), color, grosor)
     if label:
         dibujar_texto_bounding_box(frame, label, color, x1, y1)
-
-def dibujar_punto_de_tracking(frame, punto, track_id, color=COLOR_TUPLA_BLANCO):
-    x, y = int(punto[0]), int(punto[1])
-    cv2.circle(frame, (x, y), RADIO_CIRCULO_EXTERIOR_ID_TRACKING, color, GROSOR_DOS_PIXELES)
-    cv2.circle(frame, (x, y), RADIO_CIRCULO_INTERIOR_ID_TRACKING, color, GROSOR_RELLENO_COMPLETO)
-    (tw, th), _ = cv2.getTextSize(str(track_id), cv2.FONT_HERSHEY_SIMPLEX, ESCALA_FUENTE_CINCUENTA_PORCIENTO, GROSOR_UN_PIXEL)
-    punto_texto = (x - tw // 2, y + 20)
-    cv2.putText(frame, str(track_id), punto_texto, cv2.FONT_HERSHEY_SIMPLEX, ESCALA_FUENTE_CINCUENTA_PORCIENTO, color, GROSOR_DOS_PIXELES, cv2.LINE_AA)
 
 def dibujar_zona(frame, poly, color=COLOR_TUPLA_ROJO, thickness=GROSOR_DOS_PIXELES, alpha=TRANSPARENCIA_ZONA, zone_name=None, zone_id=None):
     pts = np.array(poly, dtype=np.int32)

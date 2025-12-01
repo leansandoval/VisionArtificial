@@ -19,11 +19,11 @@ class Detector:
         self.conf_thres = conf_thres
         self.imgsz = imgsz
         self.model = None
-        self._load()
+        self._cargar_modelo()
 
     # Cargar modelo Ultralytics. Si tenes un .pt personalizado (p.e. YOLOv11), pon la ruta en weights.
     # Forzar a CPU si no hay hardware compatible
-    def _load(self):
+    def _cargar_modelo(self):
         self.model = YOLO(self.weights)
         try:
             self.model.to(self.device)
@@ -50,12 +50,7 @@ class Detector:
             # Algunos modelos usan diferentes nombres; dejamos solo 'person'
             if label.lower() != LABEL_PERSON and label.lower() != LABEL_PERSON.lower(): continue
             xyxy = boxes.xyxy[i].cpu().numpy().tolist()
-            out.append({
-                'bbox': [float(x) for x in xyxy],
-                'conf': conf,
-                'cls': cls_id,
-                'label': label
-            })
+            out.append({'bbox': [float(x) for x in xyxy], 'conf': conf, 'cls': cls_id, 'label': label})
         return out
 
 if __name__ == '__main__':

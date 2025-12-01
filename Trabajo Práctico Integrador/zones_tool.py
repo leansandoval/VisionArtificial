@@ -1,7 +1,7 @@
 """Herramienta interactiva para dibujar/editar zonas poligonales usando OpenCV.
-Ejecutar: python zones_tool.py [--source 0]
-         python zones_tool.py --source screen
-         python zones_tool.py --source screen:2
+Ejecutar:   python zones_tool.py [--source 0]
+            python zones_tool.py --source screen
+            python zones_tool.py --source screen:2
 Instrucciones:
 - Click izquierdo: agregar punto al poligono
 - 'n': nueva zona (completar zona actual y empezar otra)
@@ -17,8 +17,68 @@ from src.constantes import *
 from src.screen_capture import create_screen_source, list_monitors
 from src.zones import ZonesManager
 
-WINDOW = "Zones Tool - Dibuja zonas sobre video en vivo"
+#region Constantes
+
+RADIO_CIRCULO_EXTERIOR = 8
+RADIO_CIRCULO_INTERIOR = 6
 TECLA_ESCAPE = 27
+WINDOW = "Zones Tool - Dibuja zonas sobre video en vivo"
+
+#endregion
+
+#region Funciones Auxiliares
+
+def mostrar_instrucciones_por_consola(source, zm):
+    print("\n=== HERRAMIENTA DE ZONAS ===")
+    print(f"Fuente: {source}")
+    print(f"Zonas cargadas: {len(zm.zonas)}")
+    print("\nControles:")
+    print("  Click izquierdo: agregar punto")
+    print("  n: nueva zona (guardar actual y empezar otra)")
+    print("  c: limpiar zona actual")
+    print("  d: eliminar ultima zona guardada")
+    print("  s: guardar zonas a archivo")
+    print("  ESC: salir")
+    print("=" * 30 + "\n")
+
+def dibujar_zona_actual(current, disp):
+    if len(current) > 0:
+        pts = np.array(current, dtype=np.int32)
+        if len(current) > 1:
+            cv2.polylines(disp, [pts], False, COLOR_TUPLA_VERDE, GROSOR_DOS_PIXELES)
+        for p in current:
+            cv2.circle(disp, p, RADIO_CIRCULO_INTERIOR, COLOR_TUPLA_VERDE, GROSOR_RELLENO_COMPLETO)
+        if len(current) >= 1:
+            cv2.circle(disp, current[-1], RADIO_CIRCULO_EXTERIOR, COLOR_TUPLA_CIAN, GROSOR_DOS_PIXELES)
+
+def dibujar_zonas_guardadas(zm, disp):
+    overlay = disp.copy()
+    for i, poly in enumerate(zm.zonas):
+        if len(poly) >= 3:
+            pts = np.array(poly, dtype=np.int32)
+            cv2.polylines(overlay, [pts], True, COLOR_TUPLA_ROJO, GROSOR_TRES_PIXELES)
+            cv2.fillPoly(overlay, [pts], COLOR_TUPLA_ROJO)
+            centroid = np.mean(pts, axis=0).astype(int)
+            cv2.putText(overlay, f"Z{i+1}", tuple(centroid), cv2.FONT_HERSHEY_SIMPLEX, ESCALA_FUENTE_CIEN_PORCIENTO, COLOR_TUPLA_BLANCO, GROSOR_DOS_PIXELES)
+    cv2.addWeighted(overlay, 0.3, disp, 0.7, 0, disp)
+
+def mostrar_hud(zm, current, disp):
+    hud_y = 25
+    # HUD semi-transparente: Dibujar en un overlay y mezclar para no ocultar totalmente la cámara
+    overlay = disp.copy()
+    cv2.rectangle(overlay, (5, 5), (disp.shape[1] - 5, 115), COLOR_TUPLA_NEGRO, GROSOR_RELLENO_COMPLETO)
+    alpha = 0.45  # 0.0 transparente -> 1.0 opaco
+    cv2.addWeighted(overlay, alpha, disp, 1 - alpha, 0, disp)
+    # Borde blanc
+    cv2.rectangle(disp, (5, 5), (disp.shape[1] - 5, 115), COLOR_TUPLA_BLANCO, GROSOR_DOS_PIXELES)
+    cv2.putText(disp, "Click izquierdo: agregar punto | n: definir nueva zona | c: limpiar zona actual | d: borrar ultima zona guardada | s: guardar en json", (15, hud_y), cv2.FONT_HERSHEY_SIMPLEX, ESCALA_FUENTE_CINCUENTA_PORCIENTO, COLOR_TUPLA_BLANCO, GROSOR_UN_PIXEL, cv2.LINE_AA)
+    cv2.putText(disp, f"Zona actual: {len(current)} puntos (min. 3 para guardar)", (15, hud_y + 25), cv2.FONT_HERSHEY_SIMPLEX, ESCALA_FUENTE_CINCUENTA_PORCIENTO, COLOR_TUPLA_VERDE, GROSOR_UN_PIXEL, cv2.LINE_AA)
+    cv2.putText(disp, f"Zonas guardadas: {len(zm.zonas)}", (15, hud_y + 50), cv2.FONT_HERSHEY_SIMPLEX, ESCALA_FUENTE_CINCUENTA_PORCIENTO, COLOR_TUPLA_ROJO, GROSOR_UN_PIXEL, cv2.LINE_AA)
+    cv2.putText(disp, "ESC: salir", (15, hud_y + 75), cv2.FONT_HERSHEY_SIMPLEX, ESCALA_FUENTE_CINCUENTA_PORCIENTO, COLOR_TUPLA_CIAN, GROSOR_UN_PIXEL, cv2.LINE_AA)
+
+#endregion
+
+#region Funciones Principales
 
 def main(source=0, out_path=ARCHIVO_ZONAS):
     zm = ZonesManager(out_path)
@@ -71,7 +131,7 @@ def main(source=0, out_path=ARCHIVO_ZONAS):
         elif k == ord("n"):
             if len(current) >= 3:
                 zm.zonas.append(current.copy())
-                print(f"OK Zona guardada con {len(current)} puntos. Total zonas: {len(zm.zonas)}")
+                print(f"Zona guardada con {len(current)} puntos. Total zonas: {len(zm.zonas)}")
                 current = []
             else:
                 print(f"Necesitas al menos 3 puntos (tienes {len(current)})")
@@ -82,7 +142,7 @@ def main(source=0, out_path=ARCHIVO_ZONAS):
         elif k == ord("d"):
             if len(zm.zonas) > 0:
                 removed = zm.zonas.pop()
-                print(f"OK Ultima zona eliminada ({len(removed)} puntos). Zonas restantes: {len(zm.zonas)}")
+                print(f"Ultima zona eliminada ({len(removed)} puntos). Zonas restantes: {len(zm.zonas)}")
             else:
                 print("No hay zonas guardadas para eliminar")
         elif k == ord("s"):
@@ -90,13 +150,12 @@ def main(source=0, out_path=ARCHIVO_ZONAS):
                 zm.zonas.append(current.copy())
                 while len(zm.nombres_zonas) < len(zm.zonas):
                     zm.nombres_zonas.append(f"Zona {len(zm.nombres_zonas)+1}: Area Restringida")
-                print(f"OK Zona actual guardada con {len(current)} puntos")
+                print(f"Zona actual guardada con {len(current)} puntos")
                 current = []
             while len(zm.nombres_zonas) < len(zm.zonas):
                 zm.nombres_zonas.append(f"Zona {len(zm.nombres_zonas)+1}: Area Restringida")
             zm.guardar()
-            print(f"OK OK Todas las zonas guardadas en {out_path} ({len(zm.zonas)} zonas)")
-        # Nota: opción de pausar eliminada (no hay soporte para ESPACIO)
+            print(f"Todas las zonas guardadas en {out_path} ({len(zm.zonas)} zonas)")
 
     cap.release()
     cv2.destroyAllWindows()
@@ -104,54 +163,6 @@ def main(source=0, out_path=ARCHIVO_ZONAS):
     if len(current) >= 3:
         print(f"AVISO: Tienes una zona sin guardar con {len(current)} puntos. "
             'Vuelve a ejecutar y presiona "s" para guardarla.')
-
-def mostrar_instrucciones_por_consola(source, zm):
-    print("\n=== HERRAMIENTA DE ZONAS ===")
-    print(f"Fuente: {source}")
-    print(f"Zonas cargadas: {len(zm.zonas)}")
-    print("\nControles:")
-    print("  Click izquierdo: agregar punto")
-    print("  n: nueva zona (guardar actual y empezar otra)")
-    print("  c: limpiar zona actual")
-    print("  d: eliminar ultima zona guardada")
-    print("  s: guardar zonas a archivo")
-    print("  ESC: salir")
-    print("=" * 30 + "\n")
-
-def dibujar_zona_actual(current, disp):
-    if len(current) > 0:
-        pts = np.array(current, dtype=np.int32)
-        if len(current) > 1:
-            cv2.polylines(disp, [pts], False, COLOR_TUPLA_VERDE, GROSOR_DOS_PIXELES)
-        for p in current:
-            cv2.circle(disp, p, 6, COLOR_TUPLA_VERDE, GROSOR_RELLENO_COMPLETO)
-        if len(current) >= 1:
-            cv2.circle(disp, current[-1], 8, COLOR_TUPLA_CIAN, GROSOR_DOS_PIXELES)
-
-def dibujar_zonas_guardadas(zm, disp):
-    overlay = disp.copy()
-    for i, poly in enumerate(zm.zonas):
-        if len(poly) >= 3:
-            pts = np.array(poly, dtype=np.int32)
-            cv2.polylines(overlay, [pts], True, COLOR_TUPLA_ROJO, GROSOR_TRES_PIXELES)
-            cv2.fillPoly(overlay, [pts], COLOR_TUPLA_ROJO)
-            centroid = np.mean(pts, axis=0).astype(int)
-            cv2.putText(overlay, f"Z{i+1}", tuple(centroid), cv2.FONT_HERSHEY_SIMPLEX, 1, COLOR_TUPLA_BLANCO, GROSOR_DOS_PIXELES)
-    cv2.addWeighted(overlay, 0.3, disp, 0.7, 0, disp)
-
-def mostrar_hud(zm, current, disp):
-    hud_y = 25
-    # HUD semi-transparente: dibujar en un overlay y mezclar para no ocultar totalmente la cámara
-    overlay = disp.copy()
-    cv2.rectangle(overlay, (5, 5), (disp.shape[1] - 5, 115), COLOR_TUPLA_NEGRO, GROSOR_RELLENO_COMPLETO)
-    alpha = 0.45  # 0.0 transparente -> 1.0 opaco
-    cv2.addWeighted(overlay, alpha, disp, 1 - alpha, 0, disp)
-    # Borde blanco sobre el HUD mezclado
-    cv2.rectangle(disp, (5, 5), (disp.shape[1] - 5, 115), COLOR_TUPLA_BLANCO, GROSOR_DOS_PIXELES)
-    cv2.putText(disp, "Click izquierdo: agregar punto | n: definir nueva zona | c: limpiar zona actual | d: borrar ultima zona guardada | s: guardar en json", (15, hud_y), cv2.FONT_HERSHEY_SIMPLEX, ESCALA_FUENTE_CINCUENTA_PORCIENTO, COLOR_TUPLA_BLANCO, GROSOR_UN_PIXEL, cv2.LINE_AA)
-    cv2.putText(disp, f"Zona actual: {len(current)} puntos (min. 3 para guardar)", (15, hud_y + 25), cv2.FONT_HERSHEY_SIMPLEX, ESCALA_FUENTE_CINCUENTA_PORCIENTO, COLOR_TUPLA_VERDE, GROSOR_UN_PIXEL, cv2.LINE_AA)
-    cv2.putText(disp, f"Zonas guardadas: {len(zm.zonas)}", (15, hud_y + 50), cv2.FONT_HERSHEY_SIMPLEX, ESCALA_FUENTE_CINCUENTA_PORCIENTO, COLOR_TUPLA_ROJO, GROSOR_UN_PIXEL, cv2.LINE_AA)
-    cv2.putText(disp, "ESC: salir", (15, hud_y + 75), cv2.FONT_HERSHEY_SIMPLEX, ESCALA_FUENTE_CINCUENTA_PORCIENTO, COLOR_TUPLA_CIAN, GROSOR_UN_PIXEL, cv2.LINE_AA)
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Herramienta para dibujar zonas sobre video en vivo o captura de pantalla")
@@ -167,3 +178,5 @@ if __name__ == "__main__":
     if isinstance(source, str) and source.isdigit():
         source = int(source)
     main(source=source, out_path=args.output)
+
+#endregion
