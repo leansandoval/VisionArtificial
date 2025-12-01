@@ -14,7 +14,7 @@ import argparse
 import cv2
 import numpy as np
 from src.constantes import *
-from src.screen_capture import create_screen_source, list_monitors
+from src.screen_capture import crear_fuente_pantalla, listar_monitores
 from src.zonas import GestorZonas
 
 #region Constantes
@@ -84,8 +84,8 @@ def main(source=0, out_path=ARCHIVO_ZONAS):
     zm = GestorZonas(out_path)
     zm.cargar()
     
-    # Abrir camara, video o pantalla usando create_screen_source
-    cap = create_screen_source(source)
+    # Abrir camara, video o pantalla usando crear_fuente_pantalla
+    cap = crear_fuente_pantalla(source)
     if not cap.isOpened():
         print(f"ERROR: No se pudo abrir la fuente: {source}")
         print("Tip: usa --source 0 para webcam, --source video.mp4 para un archivo, "
@@ -172,7 +172,7 @@ if __name__ == "__main__":
     parser.add_argument("--list_monitors", action="store_true", help="Listar monitores disponibles y salir")
     args = parser.parse_args()
     if args.list_monitors:
-        list_monitors()
+        listar_monitores()
         exit(0)
     source = args.source
     if isinstance(source, str) and source.isdigit():

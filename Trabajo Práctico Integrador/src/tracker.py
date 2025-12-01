@@ -1,5 +1,4 @@
 """Tracker sencillo basado en IoU / centroid matching.
-
 Este tracker no es ByteTrack, pero ofrece IDs consistentes entre frames
 y una interfaz para reemplazar la implementación por ByteTrack más adelante.
 """

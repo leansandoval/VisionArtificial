@@ -24,8 +24,8 @@ from src.detector import Detector
 from src.zonas import GestorZonas
 from src.alertas import Alertas
 from src.utils import ContadorFPS
-from src.geometric_filter import GeometricFilter
-from src.screen_capture import create_screen_source, list_monitors
+from src.filtro_geometrico import FiltroGeometrico
+from src.screen_capture import crear_fuente_pantalla, listar_monitores
 from src.overlay import dibujar_bounding_box, dibujar_zona
 
 # Importar trackers
@@ -532,12 +532,12 @@ def run_detection():
         
         # Inicializar filtro geométrico
         if config['use_geometric_filter']:
-            system_state['geo_filter'] = GeometricFilter(
-                min_time_in_zone=config['min_time_zone'],
-                min_bbox_area=config['min_bbox_area'],
-                min_confidence=config['conf'],
-                trajectory_length=10,
-                min_movement_threshold=5.0
+            system_state['geo_filter'] = FiltroGeometrico(
+                tiempo_minimo_en_zona=config['min_time_zone'],
+                area_minima_bbox=config['min_bbox_area'],
+                confianza_minima=config['conf'],
+                longitud_trayectoria=10,
+                umbral_movimiento_minimo=5.0
             )
             print('[Filtro] Filtrado geométrico activado')
         
@@ -562,13 +562,13 @@ def run_detection():
         
         # Crear captura de video
         if source_type == 'rtsp':
-            system_state['cap'] = create_screen_source(
+            system_state['cap'] = crear_fuente_pantalla(
                 source,
-                rtsp_transport=config.get('rtsp_transport', 'tcp'),
+                transporte_rtsp=config.get('rtsp_transport', 'tcp'),
                 timeout=config.get('timeout', 10000)
             )
         else:
-            system_state['cap'] = create_screen_source(source)
+            system_state['cap'] = crear_fuente_pantalla(source)
         
         if not system_state['cap'].isOpened():
             socketio.emit('log', {'message': f'✗ Error: No se pudo abrir {source}', 'level': 'error'})
@@ -663,12 +663,12 @@ def run_detection():
                 # Filtrado geométrico
                 is_valid_intrusion = False
                 if config['use_geometric_filter'] and system_state['geo_filter']:
-                    validation_result = system_state['geo_filter'].validate_intrusion(
-                        track_id=bid,
+                    validation_result = system_state['geo_filter'].validar_intrusion(
+                        id_track=bid,
                         bbox=bbox,
-                        confidence=conf,
-                        center=(x, y),
-                        is_in_zone=inside
+                        confianza=conf,
+                        centro=(x, y),
+                        esta_en_zona=inside
                     )
                     is_valid_intrusion = validation_result['is_valid']
                     if not is_valid_intrusion and inside:
@@ -708,7 +708,7 @@ def run_detection():
             
             # Limpiar tracks antiguos
             if config['use_geometric_filter'] and system_state['geo_filter']:
-                system_state['geo_filter'].cleanup_old_tracks(active_track_ids)
+                system_state['geo_filter'].limpiar_tracks_antiguos(active_track_ids)
             
             # Actualizar estado del flash visual segun presencia en zona (coincide con CLI)
             if system_state.get('alerts'):
@@ -788,13 +788,13 @@ def handle_start_zones_stream():
             
             # Crear captura
             if source_type == 'rtsp':
-                cap = create_screen_source(
+                cap = crear_fuente_pantalla(
                     source,
-                    rtsp_transport=config.get('rtsp_transport', 'tcp'),
+                    transporte_rtsp=config.get('rtsp_transport', 'tcp'),
                     timeout=config.get('timeout', 10000)
                 )
             else:
-                cap = create_screen_source(source)
+                cap = crear_fuente_pantalla(source)
             
             if not cap.isOpened():
                 socketio.emit('stream_error', {'message': 'No se pudo abrir la fuente de video'}, room=session_id)
@@ -871,13 +871,13 @@ def handle_capture_background():
         
         # Crear captura temporal
         if source_type == 'rtsp':
-            cap = create_screen_source(
+            cap = crear_fuente_pantalla(
                 source,
-                rtsp_transport=config.get('rtsp_transport', 'tcp'),
+                transporte_rtsp=config.get('rtsp_transport', 'tcp'),
                 timeout=config.get('timeout', 10000)
             )
         else:
-            cap = create_screen_source(source)
+            cap = crear_fuente_pantalla(source)
         
         if not cap.isOpened():
             emit('background_error', {'message': 'No se pudo abrir la fuente de video'})

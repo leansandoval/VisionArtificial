@@ -1,8 +1,6 @@
 # Gestión de zonas poligonales: Dibujo interactivo y operaciones espaciales.
 # Zonas se guardan/recuperan en JSON con lista de polígonos (Lista de puntos X,Y).
-import cv2
 import json
-import numpy as np
 import os
 from typing import List, Tuple
 from src.constantes import ARCHIVO_ZONAS, ETIQUETA_NOMBRES_ZONAS, ETIQUETA_ZONAS

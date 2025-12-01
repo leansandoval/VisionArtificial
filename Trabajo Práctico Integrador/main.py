@@ -16,9 +16,9 @@ import numpy as np
 import time
 from src.alertas import Alertas
 from src.detector import Detector
-from src.geometric_filter import GeometricFilter
+from src.filtro_geometrico import FiltroGeometrico
 from src.overlay import (dibujar_bounding_box, dibujar_fps, dibujar_panel_estadisticas, dibujar_zona)
-from src.screen_capture import create_screen_source, list_monitors
+from src.screen_capture import crear_fuente_pantalla, listar_monitores
 from src.tracker import SimpleTracker
 from src.utils import ContadorFPS
 from src.zonas import GestorZonas
@@ -76,16 +76,16 @@ def main(args):
     fps_counter = ContadorFPS()
 
     # Inicializar filtro geometrico avanzado
-    geo_filter = GeometricFilter(
-        min_time_in_zone=args.min_time_zone,
-        min_bbox_area=args.min_bbox_area,
-        min_confidence=args.conf,
-        trajectory_length=10,
-        min_movement_threshold=2.0,
+    geo_filter = FiltroGeometrico(
+        tiempo_minimo_en_zona=args.min_time_zone,
+        area_minima_bbox=args.min_bbox_area,
+        confianza_minima=args.conf,
+        longitud_trayectoria=10,
+        umbral_movimiento_minimo=2.0,
     )
 
-    # Usar create_screen_source para soportar captura de pantalla y RTSP
-    cap = create_screen_source(args.source, rtsp_transport=args.rtsp_transport, timeout=args.timeout)
+    # Usar crear_fuente_pantalla para soportar captura de pantalla y RTSP
+    cap = crear_fuente_pantalla(args.source, transporte_rtsp=args.rtsp_transport, timeout=args.timeout)
     if not cap.isOpened():
         print("No se pudo abrir fuente:", args.source)
         return
@@ -129,7 +129,7 @@ def main(args):
                 print(f"\n[WARNING] Frame perdido. Intento de reconexion {consecutive_failures}/{args.max_retries}...")
                 cap.release()
                 time.sleep(2)
-                cap = create_screen_source(args.source, rtsp_transport=args.rtsp_transport, timeout=args.timeout)
+                cap = crear_fuente_pantalla(args.source, transporte_rtsp=args.rtsp_transport, timeout=args.timeout)
                 if cap.isOpened():
                     print("[SUCCESS] Reconectado exitosamente")
                     consecutive_failures = 0
@@ -199,12 +199,12 @@ def main(args):
             validation_result = None
 
             if args.use_geometric_filter:
-                validation_result = geo_filter.validate_intrusion(
-                    track_id=track_id,
+                validation_result = geo_filter.validar_intrusion(
+                    id_track=track_id,
                     bbox=bbox,
-                    confidence=confidence,
-                    center=(center_x, center_y),
-                    is_in_zone=inside_zone,
+                    confianza=confidence,
+                    centro=(center_x, center_y),
+                    esta_en_zona=inside_zone,
                 )
                 is_valid_intrusion = validation_result["is_valid"]
             else:
@@ -233,7 +233,7 @@ def main(args):
                     total_alerts += 1
 
         if args.use_geometric_filter:
-            geo_filter.cleanup_old_tracks(active_track_ids)
+            geo_filter.limpiar_tracks_antiguos(active_track_ids)
 
         # Actualizar estado del flash visual segun presencia en zona
         alerts.establecer_estado_flash(len(current_in_zone) > 0)
@@ -269,7 +269,7 @@ def main(args):
     print(f"Total de alertas enviadas: {total_alerts}")
 
     if args.use_geometric_filter:
-        filter_stats = geo_filter.get_statistics()
+        filter_stats = geo_filter.obtener_estadisticas()
         print("\nEstadisticas de Filtrado Geometrico:")
         print(f"  Total detecciones procesadas: {filter_stats['total_detections']}")
         print(f"  Filtradas por tamano: {filter_stats['filtered_by_size']}")
@@ -354,7 +354,7 @@ if __name__ == "__main__":
     arguments = parser.parse_args()
 
     if arguments.list_monitors:
-        list_monitors()
+        listar_monitores()
         exit(0)
 
     main(arguments)
