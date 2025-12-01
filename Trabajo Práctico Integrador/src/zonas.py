@@ -15,7 +15,7 @@ UTF8 = 'utf-8'
 
 #endregion
 
-class ZonesManager:
+class GestorZonas:
     def __init__(self, ruta: str = ARCHIVO_ZONAS):
         self.ruta = ruta
         self.zonas: List[List[Tuple[int,int]]] = []
@@ -23,12 +23,12 @@ class ZonesManager:
         self.nombres_zonas: List[str] = []  
 
     def guardar(self):
-        data = {
+        datos = {
             ETIQUETA_ZONAS: self.zonas,
             ETIQUETA_NOMBRES_ZONAS: self.nombres_zonas
         }
         with open(self.ruta, MODO_APERTURA_ESCRITURA_ARCHIVO, encoding=UTF8) as archivo:
-            json.dump(data, archivo, indent=2)
+            json.dump(datos, archivo, indent=2)
 
     def cargar(self):
         if not os.path.exists(self.ruta):
@@ -36,14 +36,14 @@ class ZonesManager:
             self.nombres_zonas = []
             return
         with open(self.ruta, MODO_APERTURA_LECTURA_ARCHIVO, encoding=UTF8) as archivo:
-            data = json.load(archivo)
+            datos = json.load(archivo)
             # Compatibilidad con formato antiguo (solo lista de zonas)
-            if isinstance(data, list):
-                self.zonas = data
+            if isinstance(datos, list):
+                self.zonas = datos
                 self.nombres_zonas = [f"Zona {i + 1}: Área Restringida" for i in range(len(self.zonas))]
             else:
-                self.zonas = data.get(ETIQUETA_ZONAS, [])
-                self.nombres_zonas = data.get(ETIQUETA_NOMBRES_ZONAS, [f"Zona {i + 1}: Área Restringida" for i in range(len(self.zonas))])
+                self.zonas = datos.get(ETIQUETA_ZONAS, [])
+                self.nombres_zonas = datos.get(ETIQUETA_NOMBRES_ZONAS, [f"Zona {i + 1}: Área Restringida" for i in range(len(self.zonas))])
     
     # Obtiene el nombre de una zona por índice
     def obtener_nombre_zona(self, indice: int) -> str:

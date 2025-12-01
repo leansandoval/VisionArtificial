@@ -369,5 +369,5 @@ if __name__ == '__main__':
     print(f"Test 3 (suficiente tiempo): {result}")
     assert result['is_valid'], "Debería pasar después de 2 segundos"
     
-    print("\n✓ GeometricFilter funcionando correctamente")
+    print("\nGeometricFilter funcionando correctamente")
     print(f"Estadísticas: {gf.get_statistics()}")

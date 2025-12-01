@@ -21,8 +21,8 @@ from pathlib import Path
 # Importar módulos existentes SIN modificarlos
 sys.path.insert(0, str(Path(__file__).parent.parent))
 from src.detector import Detector
-from src.zones import ZonesManager
-from src.alerts import Alerts
+from src.zonas import GestorZonas
+from src.alertas import Alertas
 from src.utils import ContadorFPS
 from src.geometric_filter import GeometricFilter
 from src.screen_capture import create_screen_source, list_monitors
@@ -136,7 +136,7 @@ def settings():
 @app.route('/zones')
 def zones_editor():
     """Editor de zonas"""
-    zm = ZonesManager()
+    zm = GestorZonas()
     zm.cargar()
     return render_template('zones.html', 
                          zones=zm.zonas, 
@@ -160,7 +160,7 @@ def api_config():
 @app.route('/api/zones', methods=['GET', 'POST'])
 def api_zones():
     """Gestionar zonas"""
-    zm = ZonesManager()
+    zm = GestorZonas()
     
     if request.method == 'GET':
         zm.cargar()
@@ -502,9 +502,9 @@ def run_detection():
         # Inicializar componentes
         print(f'[Detector] Cargando modelo {config["weights"]}...')
         system_state['detector'] = Detector(
-            weights=config['weights'],
-            conf_thres=config['conf'],
-            imgsz=config['imgsz']
+            pesos=config['weights'],
+            umbral_confianza=config['conf'],
+            tam_imagen=config['imgsz']
         )
         
         # Inicializar tracker
@@ -523,12 +523,12 @@ def run_detection():
         print(f'[Tracker] {tracker_name} inicializado')
         
         # Inicializar zonas
-        system_state['zones_manager'] = ZonesManager()
+        system_state['zones_manager'] = GestorZonas()
         system_state['zones_manager'].cargar()
         print(f'[Zonas] {len(system_state["zones_manager"].zonas)} zona(s) cargada(s)')
         
         # Inicializar alertas
-        system_state['alerts'] = Alerts(cooldown_seconds=config['cooldown'])
+        system_state['alerts'] = Alertas(segundos_espera=config['cooldown'])
         
         # Inicializar filtro geométrico
         if config['use_geometric_filter']:
@@ -623,7 +623,7 @@ def run_detection():
                 tracks = last_tracks
             else:
                 # Detectar personas
-                dets = system_state['detector'].detect(frame)
+                dets = system_state['detector'].detectar(frame)
                 last_dets = dets
                 
                 # Tracking
@@ -696,7 +696,7 @@ def run_detection():
                 
                 # Alertas
                 if is_valid_intrusion and system_state['alerts']:
-                    if system_state['alerts'].alert_for_track(
+                    if system_state['alerts'].alertar_por_track(
                         bid,
                         f'⚠️ INTRUSION: Persona {bid} en zona'
                     ):
@@ -712,7 +712,7 @@ def run_detection():
             
             # Actualizar estado del flash visual segun presencia en zona (coincide con CLI)
             if system_state.get('alerts'):
-                system_state['alerts'].set_flash_state(len(current_in_zone) > 0)
+                system_state['alerts'].establecer_estado_flash(len(current_in_zone) > 0)
 
             # Actualizar estadísticas
             system_state['stats']['fps'] = round(system_state['fps_counter'].obtener_fps(), 1)

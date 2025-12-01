@@ -11,39 +11,29 @@ Notas:
 - Usa --source screen:region:x,y,w,h para capturar una region especifica
 """
 import argparse
-import time
-
 import cv2
 import numpy as np
-
-from src.alerts import Alerts
+import time
+from src.alertas import Alertas
 from src.detector import Detector
 from src.geometric_filter import GeometricFilter
-from src.overlay import (
-    dibujar_bounding_box,
-    dibujar_fps,
-    dibujar_panel_estadisticas,
-    dibujar_zona
-)
+from src.overlay import (dibujar_bounding_box, dibujar_fps, dibujar_panel_estadisticas, dibujar_zona)
 from src.screen_capture import create_screen_source, list_monitors
 from src.tracker import SimpleTracker
 from src.utils import ContadorFPS
-from src.zones import ZonesManager
+from src.zonas import GestorZonas
 
 # Importar ByteTrack si esta disponible
 try:
     from src.bytetrack_wrapper import ByteTrackWrapper
-
     BYTETRACK_AVAILABLE = True
 except ImportError:
     BYTETRACK_AVAILABLE = False
     print("[WARNING] ByteTrack no disponible. Usando SimpleTracker.")
 
-
 def bbox_center(bbox):
     x1, y1, x2, y2 = bbox
     return int((x1 + x2) / 2), int((y1 + y2) / 2)
-
 
 def bbox_zone_overlap_ratio(bbox, zone_mask):
     """Calcula el porcentaje de solapamiento del bbox con la mascara de zonas."""
@@ -62,9 +52,8 @@ def bbox_zone_overlap_ratio(bbox, zone_mask):
     zone_area = float(np.count_nonzero(zone_mask[y1:y2, x1:x2]))
     return zone_area / bbox_area if bbox_area > 0 else 0.0
 
-
 def main(args):
-    detector = Detector(weights=args.weights, device="cuda", conf_thres=args.conf, imgsz=args.imgsz)
+    detector = Detector(pesos=args.weights, dispositivo="cuda", umbral_confianza=args.conf, tam_imagen=args.imgsz)
 
     # Seleccionar tracker segun parametro
     if args.tracker == "bytetrack" and BYTETRACK_AVAILABLE:
@@ -81,9 +70,9 @@ def main(args):
         if args.tracker == "bytetrack" and not BYTETRACK_AVAILABLE:
             print("[WARNING] ByteTrack solicitado pero no disponible. Usando SimpleTracker.")
 
-    zones = ZonesManager(args.zones)
-    zones.cargar()
-    alerts = Alerts(cooldown_seconds=args.cooldown)
+    zones_manager = GestorZonas(args.zones)
+    zones_manager.cargar()
+    alerts = Alertas(segundos_espera=args.cooldown)
     fps_counter = ContadorFPS()
 
     # Inicializar filtro geometrico avanzado
@@ -121,7 +110,7 @@ def main(args):
         print(f"  - Area minima bbox: {args.min_bbox_area}px^2")
     print(f"Tamano de inferencia: {args.imgsz}px")
     print(f"Skip frames: {args.skip_frames} (0=procesar todos)")
-    print(f"Zonas configuradas: {len(zones.zonas)}")
+    print(f"Zonas configuradas: {len(zones_manager.zonas)}")
     print(f"Umbral de confianza: {args.conf}")
     print(f"Porcentaje minimo de solapamiento bbox/zona: {args.zone_overlap_ratio * 100:.0f}%")
     print(f"Alertas locales: SI (solo local)")
@@ -160,10 +149,10 @@ def main(args):
         frame_count += 1
 
         # Construir mascara combinada de zonas (una sola vez segun tamano del frame)
-        if zone_mask is None and zones.zonas:
+        if zone_mask is None and zones_manager.zonas:
             height, width = frame.shape[:2]
             zone_mask = np.zeros((height, width), dtype=np.uint8)
-            for poly in zones.zonas:
+            for poly in zones_manager.zonas:
                 cv2.fillPoly(zone_mask, [np.array(poly, dtype=np.int32)], 255)
 
         # Optimizacion: skip frames para mejorar FPS
@@ -171,15 +160,15 @@ def main(args):
             detections = last_dets
             tracks = last_tracks
         else:
-            detections = detector.detect(frame)
+            detections = detector.detectar(frame)
             last_dets = detections
 
             tracks = tracker.update(detections)
             last_tracks = tracks
 
         # Overlay de zonas con nombres personalizados
-        for indice_zona, poly in enumerate(zones.zonas):
-            zone_name = zones.obtener_nombre_zona(indice_zona)
+        for indice_zona, poly in enumerate(zones_manager.zonas):
+            zone_name = zones_manager.obtener_nombre_zona(indice_zona)
             zone_color = (0, 0, 255)
             dibujar_zona(frame, poly, color=zone_color, zone_name=zone_name)
 
@@ -202,7 +191,7 @@ def main(args):
 
             overlap_ratio = 0.0
             inside_zone = False
-            if zones.zonas and zone_mask is not None:
+            if zones_manager.zonas and zone_mask is not None:
                 overlap_ratio = bbox_zone_overlap_ratio(bbox, zone_mask)
                 inside_zone = overlap_ratio >= args.zone_overlap_ratio
 
@@ -237,7 +226,7 @@ def main(args):
             dibujar_bounding_box(frame, bbox, label, color, grosor=2)
 
             if is_valid_intrusion:
-                if alerts.alert_for_track(
+                if alerts.alertar_por_track(
                     track_id,
                     f"[ALERTA] INTRUSION: Persona {track_id} detectada en zona restringida",
                 ):
@@ -247,22 +236,22 @@ def main(args):
             geo_filter.cleanup_old_tracks(active_track_ids)
 
         # Actualizar estado del flash visual segun presencia en zona
-        alerts.set_flash_state(len(current_in_zone) > 0)
+        alerts.establecer_estado_flash(len(current_in_zone) > 0)
 
         dibujar_fps(frame, fps_counter.obtener_fps(), frame_number=frame_count)
 
-        active_zones = sum(1 for _ in zones.zonas if len(current_in_zone) > 0)
+        active_zones = sum(1 for _ in zones_manager.zonas if len(current_in_zone) > 0)
         avg_detections = len(tracks)
         estadisticas = {
             "Fotograma": frame_count,
-            "Zonas Activas": f"{active_zones}/{len(zones.zonas)}",
-            "Total Zonas": len(zones.zonas),
+            "Zonas Activas": f"{active_zones}/{len(zones_manager.zonas)}",
+            "Total Zonas": len(zones_manager.zonas),
             "Detecciones Prom": f"{avg_detections:.1f}",
         }
         dibujar_panel_estadisticas(frame, estadisticas, posicion="top-right")
 
         # Flash visual de alerta (punto rojo persistente tras una alerta)
-        if alerts.should_flash():
+        if alerts.debe_mostrar_flash():
             cv2.circle(frame, (35, 70), 20, (0, 0, 255), -1)
             cv2.circle(frame, (35, 70), 24, (0, 0, 255), 2)
 

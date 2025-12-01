@@ -15,7 +15,7 @@ import cv2
 import numpy as np
 from src.constantes import *
 from src.screen_capture import create_screen_source, list_monitors
-from src.zones import ZonesManager
+from src.zonas import GestorZonas
 
 #region Constantes
 
@@ -81,7 +81,7 @@ def mostrar_hud(zm, current, disp):
 #region Funciones Principales
 
 def main(source=0, out_path=ARCHIVO_ZONAS):
-    zm = ZonesManager(out_path)
+    zm = GestorZonas(out_path)
     zm.cargar()
     
     # Abrir camara, video o pantalla usando create_screen_source
