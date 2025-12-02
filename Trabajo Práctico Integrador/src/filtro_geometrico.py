@@ -36,9 +36,7 @@ class FiltroGeometrico:
         self.tiempo_entrada_zona_track: Dict[int, float] = {}
         
         # Trayectorias: {id_track: deque([(x, y, timestamp), ...])}
-        self.trayectorias_track: Dict[int, deque] = defaultdict(
-            lambda: deque(maxlen=self.longitud_trayectoria)
-        )
+        self.trayectorias_track: Dict[int, deque] = defaultdict(lambda: deque(maxlen=self.longitud_trayectoria))
         
         # Estadísticas para análisis
         self.estadisticas = {
