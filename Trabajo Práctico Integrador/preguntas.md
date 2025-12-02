@@ -3,10 +3,10 @@
 ## Como se realiza el calculo de la deteccion de la persona?
 Con el modelo YOLO (yolov8n.pt) sobre cada frame se evalua el umbral de confianza predefinido y tamaño de la "persona detectada" a traves de cordenadas de bbox y el filtrado geometrico, devolviendo bounding boxes con su conf.
 
-## Que es el filtrado geometrico?
+## Que es el Filtrado Geometrico?
 - Calcula ancho y alto del bbox (width = x2 - x1, height = y2 - y1) y su área (area = width * height).
 - Si el área es menor a min_bbox_area (default 2000 px²), descarta la detección si es demasiado pequeña y suma a las estadísticas de filtrado.
-- min_movement_threshold está en píxeles de la imagen: es el desplazamiento acumulado (distancia euclídea) del centro del bbox a lo largo de la trayectoria reciente. Si la suma de ese movimiento es menor a ese valor, el filtro lo considera estático. Ajusta según tu escala: 2 px es muy permisivo (acepta movimientos mínimos), valores mayores exigen más desplazamiento para no ser filtrado.
+- min_movement_threshold está en píxeles de la imagen: Es el desplazamiento acumulado (distancia euclídea) del centro del bbox a lo largo de la trayectoria reciente. Si la suma de ese movimiento es menor a ese valor, el filtro lo considera estático. Ajusta según tu escala: 2 px es muy permisivo (acepta movimientos mínimos), valores mayores exigen más desplazamiento para no ser filtrado.
 
 ## Como armamos el dataset?
 No tenemos dataset porque usamos un modelo preentrenado de YOLO
@@ -25,10 +25,10 @@ Solapamiento con la zona: se construye una máscara de las zonas y se calcula bb
 
 ## Cuantos frames son necesarios para que el modelo detecte la persona?
 
-## Se utiliza openCV?
-Sí. El proyecto usa OpenCV (cv2) en todo el pipeline: lectura de video/captura de pantalla (create_screen_source), dibujo de zonas/bounding boxes/FPS (overlay.py), herramienta de zonas (zones_tool.py) y la propia inferencia/visualización en main.py.
+## Se utiliza OpenCV?
+Sí. El proyecto usa OpenCV (cv2) en todo el pipeline: Lectura de video/captura de pantalla (create_screen_source), dibujo de zonas/bounding boxes/FPS (overlay.py), herramienta de zonas (zones_tool.py) y la propia inferencia/visualización en main.py.
 
-## Que hace el bytetrack?
+## Que hace el ByteTrack?
 ByteTrack es un tracker multi‑objeto basado en detecciones cuadro a cuadro. Usa matching por IoU/score entre detecciones consecutivas (incluye las de baja confianza) para mantener IDs estables, manejar oclusiones cortas y reducir cambios de identidad. En este proyecto, si seleccionas --tracker bytetrack, sustituye al SimpleTracker para seguir personas de forma más robusta.
 
 ## Parámetros configurables en tu TP (los que expone main.py):

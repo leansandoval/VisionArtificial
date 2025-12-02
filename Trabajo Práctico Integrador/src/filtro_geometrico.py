@@ -9,11 +9,14 @@ import time
 from collections import defaultdict, deque
 from typing import Dict, List, Tuple
 
+SEGUNDOS_SIN_ACTUALIZAR_PARA_ELIMINAR = 30
+TIEMPO_MINIMO_EN_ZONA_POR_DEFECTO = 2.0  # Segundos mínimos en zona antes de alertar
+
 class FiltroGeometrico:
     """Filtro geométrico avanzado para validar intrusiones reales."""
     
     def __init__(self, 
-                 tiempo_minimo_en_zona: float = 2.0,
+                 tiempo_minimo_en_zona: float = TIEMPO_MINIMO_EN_ZONA_POR_DEFECTO,
                  area_minima_bbox: int = 2000,
                  confianza_minima: float = 0.25,
                  longitud_trayectoria: int = 10,
@@ -48,113 +51,84 @@ class FiltroGeometrico:
             'valid_intrusions': 0
         }
     
-    def validar_tamano_deteccion(self, bbox: List[float]) -> bool:
-        """
-        Valida que el bbox tenga un tamaño mínimo razonable.
-        
-        Args:
-            bbox: [x1, y1, x2, y2]
-        
-        Returns:
-            True si el bbox es suficientemente grande
-        """
-        x1, y1, x2, y2 = bbox
+    # Valida que el bbox tenga un tamaño mínimo razonable.
+    # Args: bbox: [x1, y1, x2, y2]
+    # Returns: True si el bbox es suficientemente grande
+    def validar_tamano_deteccion(self, bounding_box: List[float]) -> bool:
+        x1, y1, x2, y2 = bounding_box
         ancho = x2 - x1
         alto = y2 - y1
         area = ancho * alto
-        
         if area < self.area_minima_bbox:
             self.estadisticas['filtered_by_size'] += 1
             return False
-        
         # Validar aspect ratio razonable para una persona (no muy ancho ni muy alto)
         relacion_aspecto = alto / ancho if ancho > 0 else 0
         if relacion_aspecto < 0.5 or relacion_aspecto > 5.0:
             self.estadisticas['filtered_by_size'] += 1
             return False
-        
         return True
     
+    # Valida que la confianza sea suficiente.
+    # Args: confianza: Confianza de la detección (0-1)
+    # Returns: True si la confianza es suficiente
     def validar_confianza(self, confianza: float) -> bool:
-        """
-        Valida que la confianza sea suficiente.
-        Args: confianza: Confianza de la detección (0-1)
-        Returns: True si la confianza es suficiente
-        """
         if confianza < self.confianza_minima:
             self.estadisticas['filtered_by_confidence'] += 1
             return False
         return True
     
+    # Actualiza la trayectoria de un track.  
+    # Args: id_track: ID del track
+    #       centro: (x, y) centro del bbox
     def actualizar_trayectoria(self, id_track: int, centro: Tuple[int, int]):
-        """
-        Actualiza la trayectoria de un track.  
-        Args:
-            id_track: ID del track
-            centro: (x, y) centro del bbox
-        """
         marca_tiempo = time.time()
         self.trayectorias_track[id_track].append((centro[0], centro[1], marca_tiempo))
     
+    # Calcula el movimiento total en la trayectoria reciente.
+    # Args: id_track: ID del track
+    # Returns: Distancia total recorrida en píxeles
     def calcular_movimiento(self, id_track: int) -> float:
-        """
-        Calcula el movimiento total en la trayectoria reciente.
-        Args: id_track: ID del track
-        Returns: Distancia total recorrida en píxeles
-        """
         trayectoria = self.trayectorias_track.get(id_track)
         if not trayectoria or len(trayectoria) < 2:
             return 0.0
-        
         distancia_total = 0.0
         for i in range(1, len(trayectoria)):
-            x1, y1, _ = trayectoria[i-1]
+            x1, y1, _ = trayectoria[i - 1]
             x2, y2, _ = trayectoria[i]
             distancia = np.sqrt((x2 - x1)**2 + (y2 - y1)**2)
             distancia_total += distancia
-        
         return distancia_total
     
+    # Determina si un track está estacionario (sin movimiento significativo).
+    # Args: id_track: ID del track
+    # Returns: True si el track está prácticamente estático
     def esta_estacionario(self, id_track: int) -> bool:
-        """
-        Determina si un track está estacionario (sin movimiento significativo).
-        Args: id_track: ID del track
-        Returns: True si el track está prácticamente estático
-        """
         trayectoria = self.trayectorias_track.get(id_track)
         if not trayectoria or len(trayectoria) < 3:
             return False  # No hay suficiente información
-        
         # Calcular movimiento reciente
         movimiento = self.calcular_movimiento(id_track)
-        
         # Si el movimiento es menor al umbral, está estacionario
         return movimiento < self.umbral_movimiento_minimo
     
+    # Valida que el track haya estado suficiente tiempo en la zona.
+    # Args: id_track: ID del track
+    #       esta_en_zona: Si actualmente está en zona
+    # Returns: True si ha estado suficiente tiempo en zona para generar alerta
     def validar_tiempo_en_zona(self, id_track: int, esta_en_zona: bool) -> bool:
-        """
-        Valida que el track haya estado suficiente tiempo en la zona.
-        Args:
-            id_track: ID del track
-            esta_en_zona: Si actualmente está en zona
-        Returns: True si ha estado suficiente tiempo en zona para generar alerta
-        """
         tiempo_actual = time.time()
-        
         if esta_en_zona:
             # Registrar entrada si es la primera vez
             if id_track not in self.tiempo_entrada_zona_track:
                 self.tiempo_entrada_zona_track[id_track] = tiempo_actual
-                return False  # Primera detección, esperar
-            
+                return False  # Primera detección, esperar 
             # Calcular tiempo transcurrido
             tiempo_en_zona = tiempo_actual - self.tiempo_entrada_zona_track[id_track]
-            
             if tiempo_en_zona < self.tiempo_minimo_en_zona:
                 self.estadisticas['filtered_by_time'] += 1
-                return False  # No ha estado suficiente tiempo
-            
-            return True  # Validado
+                return False    # No ha estado suficiente tiempo
+            return True         # Validado
         else:
             # Si ya no está en zona, limpiar registro
             if id_track in self.tiempo_entrada_zona_track:
@@ -190,111 +164,63 @@ class FiltroGeometrico:
         self.actualizar_trayectoria(id_track, centro)
         
         # Filtro 1: Validar tamaño del bbox
-        if not self.validar_tamano_deteccion(bbox):
-            return {
-                'is_valid': False,
-                'reason': 'bbox_too_small',
-                'time_in_zone': 0.0,
-                'movement': 0.0
-            }
+        if not self.validar_tamano_deteccion(bounding_box=bbox):
+            return {'is_valid': False, 'reason': 'bbox_too_small', 'time_in_zone': 0.0, 'movement': 0.0}
         
         # Filtro 2: Validar confianza
         if not self.validar_confianza(confianza):
-            return {
-                'is_valid': False,
-                'reason': 'low_confidence',
-                'time_in_zone': 0.0,
-                'movement': 0.0
-            }
+            return {'is_valid': False, 'reason': 'low_confidence', 'time_in_zone': 0.0, 'movement': 0.0}
         
         # Si no está en zona, no hay intrusión
         if not esta_en_zona:
-            return {
-                'is_valid': False,
-                'reason': 'not_in_zone',
-                'time_in_zone': 0.0,
-                'movement': self.calcular_movimiento(id_track)
-            }
+            return {'is_valid': False, 'reason': 'not_in_zone', 'time_in_zone': 0.0, 'movement': self.calcular_movimiento(id_track)}
         
         # Filtro 3: Validar tiempo en zona
         tiempo_valido = self.validar_tiempo_en_zona(id_track, esta_en_zona)
         tiempo_en_zona = 0.0
         if id_track in self.tiempo_entrada_zona_track:
             tiempo_en_zona = time.time() - self.tiempo_entrada_zona_track[id_track]
-        
         if not tiempo_valido:
-            return {
-                'is_valid': False,
-                'reason': 'insufficient_time_in_zone',
-                'time_in_zone': tiempo_en_zona,
-                'movement': self.calcular_movimiento(id_track)
-            }
+            return {'is_valid': False, 'reason': 'insufficient_time_in_zone', 'time_in_zone': tiempo_en_zona, 'movement': self.calcular_movimiento(id_track)}
         
         # Filtro 4: Validar que no esté completamente estacionario (opcional)
         # Esto filtra objetos estáticos mal clasificados como personas
         if self.esta_estacionario(id_track):
             self.estadisticas['filtered_by_movement'] += 1
-            return {
-                'is_valid': False,
-                'reason': 'stationary_object',
-                'time_in_zone': tiempo_en_zona,
-                'movement': self.calcular_movimiento(id_track)
-            }
+            return {'is_valid': False, 'reason': 'stationary_object', 'time_in_zone': tiempo_en_zona, 'movement': self.calcular_movimiento(id_track)}
         
-        # ✅ Validación exitosa
+        # Validación exitosa
         self.estadisticas['valid_intrusions'] += 1
-        return {
-            'is_valid': True,
-            'reason': 'valid_intrusion',
-            'time_in_zone': tiempo_en_zona,
-            'movement': self.calcular_movimiento(id_track)
-        }
-    
-    def limpiar_tracks_antiguos(self, ids_tracks_activos: List[int]):
-        """
-        Limpia tracks que ya no están activos.
+        return {'is_valid': True, 'reason': 'valid_intrusion', 'time_in_zone': tiempo_en_zona, 'movement': self.calcular_movimiento(id_track)}
         
-        Args:
-            ids_tracks_activos: Lista de IDs de tracks actualmente activos
-        """
+    # Limpia tracks que ya no están activos.
+    # Args: ids_tracks_activos: Lista de IDs de tracks actualmente activos
+    def limpiar_tracks_antiguos(self, ids_tracks_activos: List[int]):
         # Limpiar tiempos de entrada
         ids_inactivos = set(self.tiempo_entrada_zona_track.keys()) - set(ids_tracks_activos)
         for id_track in ids_inactivos:
             if id_track in self.tiempo_entrada_zona_track:
                 del self.tiempo_entrada_zona_track[id_track]
-        
         # Limpiar trayectorias muy antiguas (más de 30 segundos sin actualizar)
         tiempo_actual = time.time()
         tracks_a_eliminar = []
         for id_track, trayectoria in self.trayectorias_track.items():
             if trayectoria and len(trayectoria) > 0:
                 ultima_marca_tiempo = trayectoria[-1][2]
-                if tiempo_actual - ultima_marca_tiempo > 30.0:
+                if tiempo_actual - ultima_marca_tiempo > SEGUNDOS_SIN_ACTUALIZAR_PARA_ELIMINAR:
                     tracks_a_eliminar.append(id_track)
-        
         for id_track in tracks_a_eliminar:
             del self.trayectorias_track[id_track]
-    
+
     def obtener_estadisticas(self) -> Dict:
-        """
-        Obtiene estadísticas del filtrado.
-        
-        Returns:
-            Dict con estadísticas detalladas
-        """
         estadisticas = self.estadisticas.copy()
         if estadisticas['total_detections'] > 0:
-            estadisticas['filter_rate'] = (
-                (estadisticas['total_detections'] - estadisticas['valid_intrusions']) / 
-                estadisticas['total_detections'] * 100
-            )
+            estadisticas['filter_rate'] = ((estadisticas['total_detections'] - estadisticas['valid_intrusions']) / estadisticas['total_detections'] * 100)
         else:
             estadisticas['filter_rate'] = 0.0
-        
         return estadisticas
     
     def reiniciar_estadisticas(self):
-        """Resetea las estadísticas."""
         self.estadisticas = {
             'total_detections': 0,
             'filtered_by_size': 0,
@@ -303,7 +229,6 @@ class FiltroGeometrico:
             'filtered_by_movement': 0,
             'valid_intrusions': 0
         }
-
 
 if __name__ == '__main__':
     # Test básico
