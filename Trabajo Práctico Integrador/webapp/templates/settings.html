@@ -144,20 +144,6 @@
                                         <small class="form-text text-muted">Selecciona el monitor a capturar</small>
                                     </div>
                                 </div>
-
-                                <div class="mb-3">
-                                    <div class="form-check">
-                                        <input class="form-check-input" type="radio" name="source_type" id="source-video" value="video">
-                                        <label class="form-check-label" for="source-video">
-                                            <i class="bi bi-file-play"></i> Archivo de Video
-                                        </label>
-                                    </div>
-                                    <div class="ms-4 mt-2" id="video-config" style="display: none;">
-                                        <label class="form-label small">Ruta del archivo:</label>
-                                        <input type="text" class="form-control form-control-sm" id="source-video-file" 
-                                               placeholder="C:\ruta\al\video.mp4">
-                                    </div>
-                                </div>
                             </div>
 
                             <hr>
@@ -189,7 +175,7 @@
                                         <label class="form-label">
                                             Confianza Mínima: <span id="conf-value">{{ config.conf }}</span>
                                         </label>
-                                        <input type="range" class="form-range" id="conf" min="0.1" max="0.9" step="0.05" value="{{ config.conf }}">
+                                        <input type="range" class="form-range" id="conf" min="0.1" max="0.9" step="0.01" value="{{ config.conf }}">
                                         <small class="text-muted">Mayor = menos falsos positivos, menor = más detecciones</small>
                                     </div>
                                     <div class="col-md-6">
@@ -245,6 +231,40 @@
                                             </label>
                                             <input type="range" class="form-range" id="min_bbox_area" min="500" max="10000" step="100" value="{{ config.min_bbox_area }}">
                                             <small class="text-muted">Filtrar detecciones muy pequeñas</small>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="row mb-3">
+                                        <div class="col-md-6">
+                                            <label class="form-label">
+                                                Umbral Movimiento: <span id="movement-value">{{ config.get('umbral_movimiento_minimo', 2.0) }}</span>px
+                                            </label>
+                                            <input type="range" class="form-range" id="umbral_movimiento_minimo" min="1.0" max="20.0" step="0.5" value="{{ config.get('umbral_movimiento_minimo', 2.0) }}">
+                                            <small class="text-muted">Movimiento mínimo para no filtrar por objeto estático</small>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <label class="form-label">
+                                                Solapamiento Zona: <span id="overlap-value">{{ (config.get('zone_overlap_ratio', 0.30) * 100) | int }}</span>%
+                                            </label>
+                                            <input type="range" class="form-range" id="zone_overlap_ratio" min="0.10" max="0.90" step="0.05" value="{{ config.get('zone_overlap_ratio', 0.30) }}">
+                                            <small class="text-muted">% mínimo de bbox en zona para activar alerta</small>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="row mb-3">
+                                        <div class="col-md-6">
+                                            <label class="form-label">
+                                                Longitud Trayectoria: <span id="trajectory-value">{{ config.get('longitud_trayectoria', 10) }}</span>
+                                            </label>
+                                            <input type="range" class="form-range" id="longitud_trayectoria" min="5" max="30" step="1" value="{{ config.get('longitud_trayectoria', 10) }}">
+                                            <small class="text-muted">Puntos de historial para análisis de movimiento</small>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <label class="form-label">
+                                                Confianza Mínima Filtro: <span id="min-conf-filter-value">{{ config.get('min_detection_confidence', 0.25) }}</span>
+                                            </label>
+                                            <input type="range" class="form-range" id="min_detection_confidence" min="0.10" max="0.90" step="0.05" value="{{ config.get('min_detection_confidence', 0.25) }}">
+                                            <small class="text-muted">Confianza mínima para filtro geométrico</small>
                                         </div>
                                     </div>
                                 </div>

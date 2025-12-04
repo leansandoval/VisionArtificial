@@ -8,13 +8,11 @@ const btnReset = document.getElementById('btn-reset');
 const sourceWebcam = document.getElementById('source-webcam');
 const sourceRtsp = document.getElementById('source-rtsp');
 const sourceScreen = document.getElementById('source-screen');
-const sourceVideo = document.getElementById('source-video');
 
 // Configs por tipo de source
 const webcamConfig = document.getElementById('webcam-config');
 const rtspConfig = document.getElementById('rtsp-config');
 const screenConfig = document.getElementById('screen-config');
-const videoConfig = document.getElementById('video-config');
 
 // Geometric filter
 const useGeometricFilter = document.getElementById('use_geometric_filter');
@@ -31,6 +29,16 @@ const minAreaInput = document.getElementById('min_bbox_area');
 const minAreaValue = document.getElementById('min-area-value');
 const cooldownInput = document.getElementById('cooldown');
 const cooldownValue = document.getElementById('cooldown-value');
+
+// Nuevos inputs para filtro geométrico avanzado
+const movementInput = document.getElementById('umbral_movimiento_minimo');
+const movementValue = document.getElementById('movement-value');
+const overlapInput = document.getElementById('zone_overlap_ratio');
+const overlapValue = document.getElementById('overlap-value');
+const trajectoryInput = document.getElementById('longitud_trayectoria');
+const trajectoryValue = document.getElementById('trajectory-value');
+const minConfFilterInput = document.getElementById('min_detection_confidence');
+const minConfFilterValue = document.getElementById('min-conf-filter-value');
 
 // ==================== INICIALIZACIÓN ====================
 
@@ -56,7 +64,6 @@ async function loadCameras() {
     const radioWebcam = document.getElementById('source-webcam');
     const radioRtsp = document.getElementById('source-rtsp');
     const radioScreen = document.getElementById('source-screen');
-    const radioVideo = document.getElementById('source-video');
     
     select.innerHTML = '<option value="">🔍 Detectando cámaras...</option>';
     select.disabled = true;
@@ -64,7 +71,6 @@ async function loadCameras() {
     if (radioWebcam) radioWebcam.disabled = true;
     if (radioRtsp) radioRtsp.disabled = true;
     if (radioScreen) radioScreen.disabled = true;
-    if (radioVideo) radioVideo.disabled = true;
     
     try {
         console.log('[Cameras] Iniciando detección...');
@@ -110,7 +116,6 @@ async function loadCameras() {
         if (radioWebcam) radioWebcam.disabled = false;
         if (radioRtsp) radioRtsp.disabled = false;
         if (radioScreen) radioScreen.disabled = false;
-        if (radioVideo) radioVideo.disabled = false;
         
     } catch (error) {
         console.error('[Cameras] Error cargando cámaras:', error);
@@ -120,7 +125,6 @@ async function loadCameras() {
         if (radioWebcam) radioWebcam.disabled = false;
         if (radioRtsp) radioRtsp.disabled = false;
         if (radioScreen) radioScreen.disabled = false;
-        if (radioVideo) radioVideo.disabled = false;
         showNotification('Error detectando cámaras. Usando predeterminada.', 'error');
     }
 }
@@ -220,13 +224,11 @@ function applyConfigToForm(config) {
         setTimeout(() => clearInterval(checkAndSelectMonitor), 5000);
     }
     
-    document.getElementById('source-video-file').value = config.video_file || '';
-    
     // Detection
     document.getElementById('weights').value = config.weights || 'yolov8n.pt';
     document.getElementById('imgsz').value = config.imgsz || 640;
-    confInput.value = config.conf || 0.4;
-    confValue.textContent = config.conf || 0.4;
+    confInput.value = config.conf || 0.53;
+    confValue.textContent = config.conf || 0.53;
     skipInput.value = config.skip_frames || 0;
     skipValue.textContent = config.skip_frames || 0;
     
@@ -239,6 +241,24 @@ function applyConfigToForm(config) {
     minTimeValue.textContent = config.min_time_zone || 2.0;
     minAreaInput.value = config.min_bbox_area || 2000;
     minAreaValue.textContent = config.min_bbox_area || 2000;
+    
+    // Parámetros avanzados del filtro geométrico
+    if (movementInput) {
+        movementInput.value = config.umbral_movimiento_minimo || 2.0;
+        movementValue.textContent = config.umbral_movimiento_minimo || 2.0;
+    }
+    if (overlapInput) {
+        overlapInput.value = config.zone_overlap_ratio || 0.30;
+        overlapValue.textContent = ((config.zone_overlap_ratio || 0.30) * 100).toFixed(0);
+    }
+    if (trajectoryInput) {
+        trajectoryInput.value = config.longitud_trayectoria || 10;
+        trajectoryValue.textContent = config.longitud_trayectoria || 10;
+    }
+    if (minConfFilterInput) {
+        minConfFilterInput.value = config.min_detection_confidence || 0.25;
+        minConfFilterValue.textContent = config.min_detection_confidence || 0.25;
+    }
     
     // Alerts
     cooldownInput.value = config.cooldown || 10;
@@ -253,7 +273,6 @@ async function loadMonitors() {
     const radioWebcam = document.getElementById('source-webcam');
     const radioRtsp = document.getElementById('source-rtsp');
     const radioScreen = document.getElementById('source-screen');
-    const radioVideo = document.getElementById('source-video');
     
     select.innerHTML = '<option value="">🔍 Detectando monitores...</option>';
     select.disabled = true;
@@ -261,7 +280,6 @@ async function loadMonitors() {
     if (radioWebcam) radioWebcam.disabled = true;
     if (radioRtsp) radioRtsp.disabled = true;
     if (radioScreen) radioScreen.disabled = true;
-    if (radioVideo) radioVideo.disabled = true;
     
     try {
         console.log('[Monitors] Iniciando detección...');
@@ -302,7 +320,6 @@ async function loadMonitors() {
         if (radioWebcam) radioWebcam.disabled = false;
         if (radioRtsp) radioRtsp.disabled = false;
         if (radioScreen) radioScreen.disabled = false;
-        if (radioVideo) radioVideo.disabled = false;
         
     } catch (error) {
         console.error('[Monitors] Error cargando monitores:', error);
@@ -312,7 +329,6 @@ async function loadMonitors() {
         if (radioWebcam) radioWebcam.disabled = false;
         if (radioRtsp) radioRtsp.disabled = false;
         if (radioScreen) radioScreen.disabled = false;
-        if (radioVideo) radioVideo.disabled = false;
         showNotification('Error detectando monitores. Usando predeterminado.', 'error');
     }
 }
@@ -373,7 +389,6 @@ function setupEventListeners() {
     sourceWebcam.addEventListener('change', () => updateSourceConfig('webcam'));
     sourceRtsp.addEventListener('change', () => updateSourceConfig('rtsp'));
     sourceScreen.addEventListener('change', () => updateSourceConfig('screen'));
-    sourceVideo.addEventListener('change', () => updateSourceConfig('video'));
     
     // Botón refresh cámaras
     const btnRefresh = document.getElementById('btn-refresh-cameras');
@@ -409,6 +424,22 @@ function setupEventListeners() {
     minAreaInput.addEventListener('input', (e) => minAreaValue.textContent = e.target.value);
     cooldownInput.addEventListener('input', (e) => cooldownValue.textContent = e.target.value);
     
+    // Nuevos listeners para parámetros avanzados
+    if (movementInput) {
+        movementInput.addEventListener('input', (e) => movementValue.textContent = e.target.value);
+    }
+    if (overlapInput) {
+        overlapInput.addEventListener('input', (e) => {
+            overlapValue.textContent = (parseFloat(e.target.value) * 100).toFixed(0);
+        });
+    }
+    if (trajectoryInput) {
+        trajectoryInput.addEventListener('input', (e) => trajectoryValue.textContent = e.target.value);
+    }
+    if (minConfFilterInput) {
+        minConfFilterInput.addEventListener('input', (e) => minConfFilterValue.textContent = e.target.value);
+    }
+    
     // RTSP inputs - actualizar preview en tiempo real
     const rtspInputs = ['rtsp-user', 'rtsp-password', 'rtsp-ip', 'rtsp-port', 'rtsp-path'];
     rtspInputs.forEach(id => {
@@ -430,7 +461,6 @@ function updateSourceConfig(type) {
     webcamConfig.style.display = 'none';
     rtspConfig.style.display = 'none';
     screenConfig.style.display = 'none';
-    videoConfig.style.display = 'none';
     
     // Mostrar el activo
     switch(type) {
@@ -442,9 +472,6 @@ function updateSourceConfig(type) {
             break;
         case 'screen':
             screenConfig.style.display = 'block';
-            break;
-        case 'video':
-            videoConfig.style.display = 'block';
             break;
     }
 }
@@ -466,7 +493,6 @@ async function handleSubmit(e) {
         rtsp_transport: document.getElementById('rtsp-transport').value,
         timeout: parseInt(document.getElementById('rtsp-timeout').value),
         screen_monitor: document.getElementById('source-screen-monitor').value,
-        video_file: document.getElementById('source-video-file').value,
         
         weights: document.getElementById('weights').value,
         conf: parseFloat(confInput.value),
@@ -477,8 +503,13 @@ async function handleSubmit(e) {
         use_geometric_filter: useGeometricFilter.checked,
         min_time_zone: parseFloat(minTimeInput.value),
         min_bbox_area: parseInt(minAreaInput.value),
+        min_detection_confidence: minConfFilterInput ? parseFloat(minConfFilterInput.value) : 0.25,
+        longitud_trayectoria: trajectoryInput ? parseInt(trajectoryInput.value) : 10,
+        umbral_movimiento_minimo: movementInput ? parseFloat(movementInput.value) : 2.0,
+        zone_overlap_ratio: overlapInput ? parseFloat(overlapInput.value) : 0.30,
         
         cooldown: parseInt(cooldownInput.value),
+        timeout: parseInt(document.getElementById('rtsp-timeout').value),
         max_retries: 3
     };
     
@@ -523,16 +554,20 @@ function handleReset() {
             rtsp_transport: 'tcp',
             timeout: 10000,
             screen_monitor: '1',
-            video_file: '',
             weights: 'yolov8n.pt',
-            conf: 0.4,
+            conf: 0.53,
             imgsz: 640,
             skip_frames: 0,
             tracker: 'bytetrack',
             use_geometric_filter: true,
             min_time_zone: 2.0,
             min_bbox_area: 2000,
-            cooldown: 10
+            min_detection_confidence: 0.25,
+            longitud_trayectoria: 10,
+            umbral_movimiento_minimo: 2.0,
+            zone_overlap_ratio: 0.30,
+            cooldown: 10,
+            max_retries: 3
         };
         
         applyConfigToForm(defaultConfig);

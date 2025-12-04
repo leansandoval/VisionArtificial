@@ -70,13 +70,16 @@ system_state = {
         'video_file': '',
         'screen_monitor': '0',
         'weights': 'yolov8n.pt',
-        'conf': 0.4,
+        'conf': 0.53,
         'imgsz': 640,
         'skip_frames': 0,
         'tracker': 'bytetrack',
         'use_geometric_filter': True,
         'min_time_zone': 2.0,
         'min_bbox_area': 2000,
+        'min_detection_confidence': 0.25,
+        'longitud_trayectoria': 10,
+        'umbral_movimiento_minimo': 2.0,
         'zone_overlap_ratio': 0.30,
         'cooldown': 10,
         'timeout': 10000,
@@ -533,11 +536,11 @@ def run_detection():
         # Inicializar filtro geométrico
         if config['use_geometric_filter']:
             system_state['geo_filter'] = FiltroGeometrico(
-                tiempo_minimo_en_zona=config['min_time_zone'],
-                area_minima_bbox=config['min_bbox_area'],
-                confianza_minima=config['conf'],
-                longitud_trayectoria=10,
-                umbral_movimiento_minimo=5.0
+                tiempo_minimo_en_zona=config.get('min_time_zone', 2.0),
+                area_minima_bbox=config.get('min_bbox_area', 2000),
+                confianza_minima=config.get('min_detection_confidence', 0.25),
+                longitud_trayectoria=config.get('longitud_trayectoria', 10),
+                umbral_movimiento_minimo=config.get('umbral_movimiento_minimo', 2.0)
             )
             print('[Filtro] Filtrado geométrico activado')
         
