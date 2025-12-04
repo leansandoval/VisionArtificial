@@ -607,39 +607,47 @@ async function handleSubmit(e) {
 // ==================== RESET ====================
 
 function handleReset() {
-    if (confirm('¿Restaurar valores por defecto? Se perderán los cambios no guardados.')) {
-        const defaultConfig = {
-            source_type: 'webcam',
-            source_value: '0',
-            rtsp_url: '',
-            rtsp_user: 'admin',
-            rtsp_password: '',
-            rtsp_ip: '192.168.1.100',
-            rtsp_port: 554,
-            rtsp_path: '/Streaming/Channels/101',
-            rtsp_transport: 'tcp',
-            timeout: 10000,
-            screen_monitor: '1',
-            weights: 'yolov8n.pt',
-            conf: 0.53,
-            imgsz: 640,
-            skip_frames: 0,
-            tracker: 'bytetrack',
-            use_geometric_filter: true,
-            min_time_zone: 2.0,
-            min_bbox_area: 2000,
-            min_detection_confidence: 0.25,
-            longitud_trayectoria: 10,
-            umbral_movimiento_minimo: 2.0,
-            zone_overlap_ratio: 0.30,
-            cooldown: 10,
-            max_retries: 3
-        };
-        
-        applyConfigToForm(defaultConfig);
-        showNotification('Valores restaurados a predeterminados', 'info');
-    }
+    // Mostrar modal de confirmación en lugar de confirm() nativo
+    const modal = new bootstrap.Modal(document.getElementById('resetConfirmModal'));
+    modal.show();
 }
+
+// Evento del botón de confirmación dentro del modal
+document.getElementById('btn-confirm-reset')?.addEventListener('click', () => {
+    const defaultConfig = {
+        source_type: 'webcam',
+        source_value: '0',
+        rtsp_url: '',
+        rtsp_user: 'admin',
+        rtsp_password: '',
+        rtsp_ip: '192.168.1.100',
+        rtsp_port: 554,
+        rtsp_path: '/Streaming/Channels/101',
+        rtsp_transport: 'tcp',
+        timeout: 10000,
+        screen_monitor: '1',
+        weights: 'yolov8n.pt',
+        conf: 0.53,
+        imgsz: 640,
+        skip_frames: 0,
+        tracker: 'bytetrack',
+        use_geometric_filter: true,
+        min_time_zone: 2.0,
+        min_bbox_area: 2000,
+        min_detection_confidence: 0.25,
+        longitud_trayectoria: 10,
+        umbral_movimiento_minimo: 2.0,
+        zone_overlap_ratio: 0.30,
+        cooldown: 10,
+        max_retries: 3
+    };
+    
+    applyConfigToForm(defaultConfig);
+    showNotification('Valores restaurados a predeterminados', 'info');
+    
+    // Cerrar el modal
+    bootstrap.Modal.getInstance(document.getElementById('resetConfirmModal')).hide();
+});
 
 // ==================== NOTIFICACIONES ====================
 
