@@ -448,11 +448,16 @@ def handle_stop():
         
         # Liberar recursos
         if system_state['cap']:
-            system_state['cap'].release()
-            system_state['cap'] = None
+            try:
+                system_state['cap'].release()
+            except Exception as e:
+                print(f'[Sistema] Advertencia al liberar captura: {e}')
+            finally:
+                system_state['cap'] = None
         
         socketio.emit('status', {'running': False, 'paused': False})
         socketio.emit('log', {'message': '✓ Sistema detenido', 'level': 'info'})
+        print('[Sistema] Detección finalizada')
     else:
         emit('log', {'message': '⚠ Sistema no está corriendo', 'level': 'warning'})
 

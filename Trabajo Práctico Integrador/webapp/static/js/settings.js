@@ -40,9 +40,67 @@ const trajectoryValue = document.getElementById('trajectory-value');
 const minConfFilterInput = document.getElementById('min_detection_confidence');
 const minConfFilterValue = document.getElementById('min-conf-filter-value');
 
+// Estado de carga
+let camerasLoaded = false;
+let monitorsLoaded = false;
+
+// ==================== CONTROL DE ESTADO DEL FORMULARIO ====================
+
+function disableAllControls() {
+    // Mostrar indicador de carga
+    const loadingIndicator = document.getElementById('loading-indicator');
+    if (loadingIndicator) loadingIndicator.style.display = 'block';
+    
+    // Deshabilitar todos los inputs, selects, botones y radios del formulario
+    const allInputs = settingsForm.querySelectorAll('input, select, button, textarea');
+    allInputs.forEach(element => {
+        element.disabled = true;
+    });
+    
+    // Deshabilitar botones externos al form
+    const btnSubmit = settingsForm.querySelector('button[type="submit"]');
+    const btnCancel = settingsForm.querySelector('a.btn-outline-secondary');
+    if (btnReset) btnReset.disabled = true;
+    if (btnSubmit) btnSubmit.disabled = true;
+    if (btnCancel) btnCancel.classList.add('disabled');
+    
+    console.log('[Settings] Todos los controles deshabilitados hasta completar carga');
+}
+
+function enableAllControls() {
+    // Ocultar indicador de carga
+    const loadingIndicator = document.getElementById('loading-indicator');
+    if (loadingIndicator) loadingIndicator.style.display = 'none';
+    
+    // Habilitar todos los inputs, selects, botones y radios del formulario
+    const allInputs = settingsForm.querySelectorAll('input, select, button, textarea');
+    allInputs.forEach(element => {
+        element.disabled = false;
+    });
+    
+    // Habilitar botones externos
+    const btnSubmit = settingsForm.querySelector('button[type="submit"]');
+    const btnCancel = settingsForm.querySelector('a.btn-outline-secondary');
+    if (btnReset) btnReset.disabled = false;
+    if (btnSubmit) btnSubmit.disabled = false;
+    if (btnCancel) btnCancel.classList.remove('disabled');
+    
+    console.log('[Settings] Todos los controles habilitados');
+}
+
+function checkLoadingComplete() {
+    if (camerasLoaded && monitorsLoaded) {
+        enableAllControls();
+        console.log('[Settings] ✓ Carga completa - Formulario habilitado');
+    }
+}
+
 // ==================== INICIALIZACIÓN ====================
 
 document.addEventListener('DOMContentLoaded', async () => {
+    // Deshabilitar todo inicialmente
+    disableAllControls();
+    
     // Cargar configuración actual
     await loadConfig();
     
@@ -126,6 +184,10 @@ async function loadCameras() {
         if (radioRtsp) radioRtsp.disabled = false;
         if (radioScreen) radioScreen.disabled = false;
         showNotification('Error detectando cámaras. Usando predeterminada.', 'error');
+    } finally {
+        // Marcar cámaras como cargadas
+        camerasLoaded = true;
+        checkLoadingComplete();
     }
 }
 
@@ -330,6 +392,10 @@ async function loadMonitors() {
         if (radioRtsp) radioRtsp.disabled = false;
         if (radioScreen) radioScreen.disabled = false;
         showNotification('Error detectando monitores. Usando predeterminado.', 'error');
+    } finally {
+        // Marcar monitores como cargados
+        monitorsLoaded = true;
+        checkLoadingComplete();
     }
 }
 

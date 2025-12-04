@@ -370,6 +370,16 @@ body {
 
 .spin {
     animation: spin 1s linear infinite;
+}
+
+.disabled {
+    pointer-events: none;
+    opacity: 0.6;
+    cursor: not-allowed !important;
+}
+
+.spin {
+    animation: spin 1s linear infinite;
     display: inline-block;
 }
 

@@ -67,7 +67,14 @@ class ScreenCapture:
     def release(self):
         self._esta_abierto = False
         if self.sct:
-            self.sct.close()
+            try:
+                self.sct.close()
+            except AttributeError:
+                # Ignorar error si se llama desde otro thread (ej: SocketIO)
+                # mss usa _thread._local que no funciona cross-thread
+                pass
+            except Exception as e:
+                print(f"[ScreenCapture] Advertencia al liberar: {e}")
         print("[ScreenCapture] Liberado")
     
     # Obtiene propiedades del video (compatible con cv2.VideoCapture).        
