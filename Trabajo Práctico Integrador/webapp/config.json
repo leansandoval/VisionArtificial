@@ -1,7 +1,7 @@
 {
-  "source_type": "webcam",
+  "source_type": "screen",
   "source_value": "0",
-  "rtsp_url": "",
+  "rtsp_url": "rtsp://admin:Leandro_22@192.168.1.42:554/Streaming/Channels/101",
   "rtsp_transport": "tcp",
   "video_file": "",
   "screen_monitor": "1",
@@ -18,6 +18,6 @@
   "umbral_movimiento_minimo": 2,
   "zone_overlap_ratio": 0.3,
   "cooldown": 10,
-  "timeout": 10000,
+  "timeout": 5000,
   "max_retries": 3
 }
