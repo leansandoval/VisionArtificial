@@ -215,13 +215,13 @@ def main(args):
 
             if is_valid_intrusion:
                 color = (0, 0, 255)
-                label = f"Person ({confidence:.2f})"
+                label = f"ID:{track_id} ({confidence:.2f})"
             elif inside_zone and args.use_geometric_filter:
                 color = (0, 165, 255)
-                label = f"Person ({confidence:.2f}) - Validando..."
+                label = f"ID:{track_id} ({confidence:.2f}) - Validando"
             else:
                 color = (0, 255, 0)
-                label = f"Person ({confidence:.2f})"
+                label = f"ID:{track_id} ({confidence:.2f})"
 
             dibujar_bounding_box(frame, bbox, etiqueta=label, color=color, grosor=2)
 

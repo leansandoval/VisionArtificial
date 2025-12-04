@@ -4,6 +4,7 @@ numpy
 scipy
 supervision>=0.16.0
 mss  # Para captura de pantalla
+Pillow>=10.0.0  # Para soporte UTF-8 en overlay
 
 # Para la web
 flask>=3.0.0
