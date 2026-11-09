@@ -1,5 +1,5 @@
 # Visión Artificial
-Trabajos prácticos de la materia Electiva III - Visión Artificial (3679) realizado en el Segundo Cuatrimestre 2025. 
+Trabajos prácticos de la materia Visión Artificial (3679) realizado en el Segundo Cuatrimestre 2025. 
 
 ## Información de la Asignatura
 * **Carrera**: Ingeniería en Informática
