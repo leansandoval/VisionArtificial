@@ -1,4 +1,4 @@
-# Visión Artificial
+<img width="1536" height="1024" alt="image" src="https://github.com/user-attachments/assets/1abc0675-4ac7-4cd1-9ef2-63be84aa17fd" /><img width="1920" height="641" alt="image" src="https://github.com/user-attachments/assets/50192f4e-ed87-4698-937e-02021ae9a2c9" /># Visión Artificial
 Trabajos prácticos de la materia Visión Artificial (3679) - 2C 2025 - UNLaM. 
 
 ## Información de la Asignatura
@@ -113,6 +113,11 @@ Trabajos prácticos de la materia Visión Artificial (3679) - 2C 2025 - UNLaM.
 * Deblur.
 
 ## Unidad 6 Deep learning
+
+![Arquitectura AlexNet](https://cdn.learnopencv.com/wp-content/uploads/2018/05/04100023/AlexNet-1.png)
+
+![YOLO](https://www.fiverr.com/pro_user3/develop-realtime-computer-vision-systems-with-opencv-and-yolo?context_referrer=tag_page&source=TagPage&ref_ctx_id=1474c99781f6410e9297b4e4899f9aa9&pckg_id=1&pos=17&imp_id=9876d804-b9fd-4393-89f0-c8b3d99b46df)
+
 * Capa convolucional.
 * CNN.
 * Codificación y clasificación con CNN.
@@ -131,12 +136,22 @@ Trabajos prácticos de la materia Visión Artificial (3679) - 2C 2025 - UNLaM.
 * Entrenamiento de U-Net con imágenes médicas.
 
 ## Unidad 7 Segmentación clásica
+
+![Segmentación Watershed](https://opencv.org/wp-content/uploads/2026/01/Watershed-Segmentation-Using-OpenCV.jpg)
+
 * Segmentación: por colores, semántica.
-* Algoritmo watershed.
+* Algoritmo Watershed.
 * Algoritmo GrabCut.
-* Alpha matting.
+* Alpha Matting.
 
 ## Unidad 8 Puntos singulares y descriptores
+
+![Subpixel Accuracy](https://www.mitutoyo.com/webfoo/wp-content/uploads/89293712-213x600.png)
+
+![LBP](https://cesartroyasherdek.wordpress.com/wp-content/uploads/2016/02/lbp1.png)
+
+![Bag of Words](https://machinelearningmastery.com/llm-embeddings-vs-tf-idf-vs-bag-of-words-which-works-better-in-scikit-learn/)
+
 * Detección de puntos singulares (feature detection): FAST y otros algoritmos.
 * Subpixel accuracy.
 * Extracción de descriptores.
@@ -181,7 +196,8 @@ Trabajos prácticos de la materia Visión Artificial (3679) - 2C 2025 - UNLaM.
 * M-estimators.
 * Minimización por Gauss Newton y Levenberg Marquardt.
 * Estimadores robustos.
-* Métodos robustos: RANSAC, LMEDS. PROSAC y RHO para homografías.
+* Métodos robustos: RANSAC, LMEDS.
+* PROSAC y RHO para homografías.
 
 ## Unidad 12 Reconocimiento de texto y códigos
 * Detección y reconocimiento de texto.
@@ -190,6 +206,8 @@ Trabajos prácticos de la materia Visión Artificial (3679) - 2C 2025 - UNLaM.
 * Realidad aumentada. 
 
 ## Unidad 13 Análisis de movimiento
+
+![Flujo Óptico](https://es.wikipedia.org/wiki/Flujo_%C3%B3ptico#/media/Archivo:Opticfloweg.png)
 
 ![Background Subtraction](https://docs.opencv.org/4.13.0/Background_Subtraction_Tutorial_Scheme.png)
 
