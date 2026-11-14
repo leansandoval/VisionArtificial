@@ -1,17 +1,57 @@
-# Visión Artificial
-Trabajos prácticos de la materia Visión Artificial (3679) - 2C 2025 - UNLaM. 
+<div align="center">
+  <h1>👁️ Visión Artificial</h1>
+  <p><em>Trabajos prácticos y desarrollo de algoritmos de procesamiento de imágenes y Visión Computacional (3679) - 2C 2025 - UNLaM.</em></p>
 
-## Información de la Asignatura
+  <!-- Badges -->
+  <img src="https://img.shields.io/badge/Universidad-UNLaM-1F4F90?style=for-the-badge&logo=google-scholar&logoColor=white" alt="UNLaM" />
+  <img src="https://img.shields.io/badge/Año-2025-2EA043?style=for-the-badge" alt="2025" />
+  <img src="https://img.shields.io/badge/Lenguaje-Python-3776AB?style=for-the-badge&logo=python&logoColor=white" alt="Python" />
+  <img src="https://img.shields.io/badge/Biblioteca-OpenCV-5C3EE8?style=for-the-badge&logo=opencv&logoColor=white" alt="OpenCV" />
+  <img src="https://img.shields.io/badge/Grupo-4-7057D2?style=for-the-badge" alt="Grupo 4" />
+  <img src="https://img.shields.io/badge/Estado-Completado-blue?style=for-the-badge" alt="Completado" />
+</div>
+
+<br>
+
+## 📑 Índice
+- [Información de la Asignatura](#informacion-de-la-asignatura)
+- [Trayecto - Gestión y Complementarias](#trayecto)
+- [Docentes](#docentes)
+- [Integrantes del Grupo](#integrantes)
+- [Unidad 1 - Introducción](#unidad-1)
+- [Unidad 2 - Histogramas](#unidad-2)
+- [Unidad 3 - Imágenes Binarias](#unidad-3)
+- [Unidad 4 - Machine Learning](#unidad-4)
+- [Unidad 5 - Filtros](#unidad-5)
+- [Unidad 6 - Deep Learning](#unidad-6)
+- [Unidad 7 - Segmentación Clásica](#unidad-7)
+- [Unidad 8 - Puntos Singulares y Descriptores](#unidad-8)
+- [Unidad 9 - Calibración de Cámara](#unidad-9)
+- [Unidad 10 - Transformaciones Geométricas](#unidad-10)
+- [Unidad 11 - Métodos Numéricos](#unidad-11)
+- [Unidad 12 - Reconocimiento de Texto y Códigos](#unidad-12)
+- [Unidad 13 - Análisis de Movimiento](#unidad-13)
+- [Librerías Necesarias e Instalación](#librerias-necesarias)
+- [Estructura del Proyecto](#estructura-del-proyecto)
+
+---
+
+🔗 **[Repositorio Oficial en GitHub](https://github.com/leansandoval/VisionArtificial)**
+
+---
+
+<a id="informacion-de-la-asignatura"></a>
+## ℹ️ Información de la Asignatura
 * **Carrera**: Ingeniería en Informática
 * **Asignatura**: Visión Artificial (3679)
 * **Cuatrimestre**: Segundo Cuatrimestre
 * **Año**: 2025
 * **Grupo**: 4
 
-## Trayecto - Gestión y Complementarias
-
+<a id="trayecto"></a>
+## 👨‍💻 Trayecto - Gestión y Complementarias
 * **Año académico**: Quinto Año - Segundo Cuatrimestre
-* **Responsable / Jefe de catedra**: Silvestri, Jorge Alejandro
+* **Responsable / Jefe de cátedra**: Silvestri, Jorge Alejandro
 * **Carga horaria semanal**: 4 hs
 * **Carga horaria total**: 64 hs
 * **Modalidad**: Virtual
@@ -20,29 +60,39 @@ Trabajos prácticos de la materia Visión Artificial (3679) - 2C 2025 - UNLaM.
   * Arquitectura de Sistemas Software (3653)
   * Gestión de Proyectos (3661)
 
-## Docentes
+<a id="docentes"></a>
+## 👨‍🏫 Docentes
 * Silvestri, Jorge Alejandro
 * Sinopoli, Alesio Esteban
 
+<a id="integrantes"></a>
 ## 👥 Integrantes
 <div align="center">
 
 | Apellido/s | Nombre/s |
 | :--: | :--: |
-| Contreras | Agustin |
-| Povoli Olivera | Victor |
-| Sandoval Vasquez | Juan Leandro |
-| Simonetti | Gian Luca |
+| **Contreras** | Agustin |
+| **Povoli Olivera** | Victor |
+| **Sandoval Vasquez** | Juan Leandro |
+| **Simonetti** | Gian Luca |
 
 </div>
 
 ---
 
-## Unidad 1 Introducción
+<a id="unidad-1"></a>
+## Unidad 1 - Introducción
 
-![¿Qué es Visión Artificial?](https://i0.wp.com/ticsyformacion.com/wp-content/uploads/2025/07/vision-artificial_infografia.png?fit=1024%2C1536&ssl=1)
-
-![OpenCV](https://www.edge-ai-vision.com/wp-content/uploads/2012/01/OpenCVIntroductionFigure1.jpg)
+<div align="center">
+  <img src="https://i0.wp.com/ticsyformacion.com/wp-content/uploads/2025/07/vision-artificial_infografia.png?fit=1024%2C1536&ssl=1" alt="¿Qué es Visión Artificial?" width="400" />
+  <br>
+  <sup><em>Fundamentos y panorama general de la Visión Artificial</em></sup>
+  <br><br>
+  <img src="https://www.edge-ai-vision.com/wp-content/uploads/2012/01/OpenCVIntroductionFigure1.jpg" alt="OpenCV" width="450" />
+  <br>
+  <sup><em>OpenCV: Librería principal para el procesamiento digital de imágenes</em></sup>
+</div>
+<br>
 
 * Definición de imagen, procesamiento de imagen y visión artificial.
 * Problemas generales de la visión artificial.
@@ -50,24 +100,46 @@ Trabajos prácticos de la materia Visión Artificial (3679) - 2C 2025 - UNLaM.
 * Introducción a Python.
 * Introducción a la biblioteca OpenCV.
 
-## Unidad 2 Histogramas
+---
 
-![Histograma - Parte I](https://scontent.faep28-2.fna.fbcdn.net/v/t39.30808-6/514279220_766542952414250_312648435951411254_n.jpg?stp=dst-jpg_tt6&cstp=mx1605x1915&ctp=s1605x1915&_nc_cat=111&_nc_map=urlgen_bucketless&ccb=1-7&_nc_sid=127cfc&_nc_eui2=AeHJYMD9ZVJ5SQ0kJ9BlrmjpEhLegNOI4vQSEt6A04ji9OZupmB-jS_owFkBwbT4ZxAgcg9Uf5sUTeGoBmOnloF_&_nc_ohc=E5PFsU0w7-sQ7kNvwHlTtJ_&_nc_oc=AdpJUZrEihaq2CAjAK4Uw3cKXk5aiIw1aclJkQkpcSxLrEEycmPokdLiR9fP8epD2cIMivXqO4BxM9tDwSDAOQJS&_nc_zt=23&_nc_ht=scontent.faep28-2.fna&_nc_gid=-Fy_8dBl2Q0KXdIHl-wW9A&_nc_ss=7b2a8&oh=00_AQTHu5an3t-D-lY4m5X77BCxfsY3A3Q2Q-gZaGwp-AOz6A&oe=6AFDBB52)
+<a id="unidad-2"></a>
+## Unidad 2 - Histogramas
 
-![Histograma - Parte II](https://scontent.faep28-1.fna.fbcdn.net/v/t39.30808-6/529021069_766542972414248_4281231643661865910_n.jpg?stp=dst-jpg_tt6&cstp=mx1605x1915&ctp=s1605x1915&_nc_cat=109&_nc_map=urlgen_bucketless&ccb=1-7&_nc_sid=127cfc&_nc_eui2=AeEGRKsE43nBVJVnb6a_MpH21HV6v5n1JIrUdXq_mfUkiqOY01mL5d2okIkJIWYox_Rq2UWEbVegdL5euv59VVDq&_nc_ohc=HHTHanDcomIQ7kNvwHWgMeM&_nc_oc=Adqw_y83cum1PByyaRYW70z_Z6PbUK1CW0XjgtRmEkuHFoB5Vczqw2qdA7YdT0PuyFhc5eQinm9okWw27X-qCEq7&_nc_zt=23&_nc_ht=scontent.faep28-1.fna&_nc_gid=zCDFG8Iq1X_HqjcHV1vHmA&_nc_ss=7b2a8&oh=00_AQQ_sqMCog1npyxmY8YWVlpwwmO71tA5Ig2VKLsu60iRVg&oe=6AFD97CD)
-
-![Backprojection](https://cdn.shortpixel.ai/spai/w_512+q_lossy+ret_img+to_webp/howradiologyworks.com/wp-content/uploads/2020/11/FBP_800_1600.png)
+<div align="center">
+  <img src="https://scontent.faep28-2.fna.fbcdn.net/v/t39.30808-6/514279220_766542952414250_312648435951411254_n.jpg?stp=dst-jpg_tt6&cstp=mx1605x1915&ctp=s1605x1915&_nc_cat=111&_nc_map=urlgen_bucketless&ccb=1-7&_nc_sid=127cfc&_nc_eui2=AeHJYMD9ZVJ5SQ0kJ9BlrmjpEhLegNOI4vQSEt6A04ji9OZupmB-jS_owFkBwbT4ZxAgcg9Uf5sUTeGoBmOnloF_&_nc_ohc=E5PFsU0w7-sQ7kNvwHlTtJ_&_nc_oc=AdpJUZrEihaq2CAjAK4Uw3cKXk5aiIw1aclJkQkpcSxLrEEycmPokdLiR9fP8epD2cIMivXqO4BxM9tDwSDAOQJS&_nc_zt=23&_nc_ht=scontent.faep28-2.fna&_nc_gid=-Fy_8dBl2Q0KXdIHl-wW9A&_nc_ss=7b2a8&oh=00_AQTHu5an3t-D-lY4m5X77BCxfsY3A3Q2Q-gZaGwp-AOz6A&oe=6AFDBB52" alt="Histograma - Parte I" width="400" />
+  <br>
+  <sup><em>Distribución de intensidades de píxeles en imágenes de escala de grises</em></sup>
+  <br><br>
+  <img src="https://scontent.faep28-1.fna.fbcdn.net/v/t39.30808-6/529021069_766542972414248_4281231643661865910_n.jpg?stp=dst-jpg_tt6&cstp=mx1605x1915&ctp=s1605x1915&_nc_cat=109&_nc_map=urlgen_bucketless&ccb=1-7&_nc_sid=127cfc&_nc_eui2=AeEGRKsE43nBVJVnb6a_MpH21HV6v5n1JIrUdXq_mfUkiqOY01mL5d2okIkJIWYox_Rq2UWEbVegdL5euv59VVDq&_nc_ohc=HHTHanDcomIQ7kNvwHWgMeM&_nc_oc=Adqw_y83cum1PByyaRYW70z_Z6PbUK1CW0XjgtRmEkuHFoB5Vczqw2qdA7YdT0PuyFhc5eQinm9okWw27X-qCEq7&_nc_zt=23&_nc_ht=scontent.faep28-1.fna&_nc_gid=zCDFG8Iq1X_HqjcHV1vHmA&_nc_ss=7b2a8&oh=00_AQQ_sqMCog1npyxmY8YWVlpwwmO71tA5Ig2VKLsu60iRVg&oe=6AFD97CD" alt="Histograma - Parte II" width="400" />
+  <br>
+  <sup><em>Ecualización de Histograma para mejora de contraste</em></sup>
+  <br><br>
+  <img src="https://cdn.shortpixel.ai/spai/w_512+q_lossy+ret_img+to_webp/howradiologyworks.com/wp-content/uploads/2020/11/FBP_800_1600.png" alt="Backprojection" width="450" />
+  <br>
+  <sup><em>Técnica de Histograma Backprojection para segmentación de regiones</em></sup>
+</div>
+<br>
 
 * Histograma de una imagen.
 * Ecualización del histograma: balance automático.
 * Aplicaciones de la comparación de histogramas.
 * Backprojection.
 
-## Unidad 3 Imágenes binarias
+---
 
-![Metodología de Umbralización](https://www.redalyc.org/journal/5537/553770380006/2145-8456-uisi-20-02-65-gf1.jpg)
+<a id="unidad-3"></a>
+## Unidad 3 - Imágenes Binarias
 
-![Otsu](https://scontent.faep28-1.fna.fbcdn.net/v/t39.30808-6/480553758_2404708736540196_1058568074053299630_n.jpg?stp=dst-jpg_tt6&cstp=mx2048x2048&ctp=s2048x2048&_nc_cat=101&_nc_map=urlgen_bucketless&ccb=1-7&_nc_sid=127cfc&_nc_eui2=AeHKpw8z-IiVjpOZeysxOgNik6Oa4d5ygx6To5rh3nKDHsR-dLqvJI6c_gUVUkKS7O_DbBRZ0R3pSsBQGwezFGPu&_nc_ohc=XgseUZtPxCQQ7kNvwHiACvF&_nc_oc=AdrMFCcW-dnUJbLoq4H7DOZI1YA_w4ZS_kgu4vkKSFKjTOuvac739BXiLYML5RRxErvbB_sWjOl5dE2N8z9jfpQl&_nc_zt=23&_nc_ht=scontent.faep28-1.fna&_nc_gid=rKiAcAmu-zhU2JocCT9DQg&_nc_ss=7b2a8&oh=00_AQTPVP8RJX6_pvWlpn3bb9MCsDfda1TZHdTFDEya9SolJQ&oe=6AFDB04D)
+<div align="center">
+  <img src="https://www.redalyc.org/journal/5537/553770380006/2145-8456-uisi-20-02-65-gf1.jpg" alt="Metodología de Umbralización" width="450" />
+  <br>
+  <sup><em>Umbralización (Thresholding) en procesamiento digital de imágenes</em></sup>
+  <br><br>
+  <img src="https://scontent.faep28-1.fna.fbcdn.net/v/t39.30808-6/480553758_2404708736540196_1058568074053299630_n.jpg?stp=dst-jpg_tt6&cstp=mx2048x2048&ctp=s2048x2048&_nc_cat=101&_nc_map=urlgen_bucketless&ccb=1-7&_nc_sid=127cfc&_nc_eui2=AeHKpw8z-IiVjpOZeysxOgNik6Oa4d5ygx6To5rh3nKDHsR-dLqvJI6c_gUVUkKS7O_DbBRZ0R3pSsBQGwezFGPu&_nc_ohc=XgseUZtPxCQQ7kNvwHiACvF&_nc_oc=AdrMFCcW-dnUJbLoq4H7DOZI1YA_w4ZS_kgu4vkKSFKjTOuvac739BXiLYML5RRxErvbB_sWjOl5dE2N8z9jfpQl&_nc_zt=23&_nc_ht=scontent.faep28-1.fna&_nc_gid=rKiAcAmu-zhU2JocCT9DQg&_nc_ss=7b2a8&oh=00_AQTPVP8RJX6_pvWlpn3bb9MCsDfda1TZHdTFDEya9SolJQ&oe=6AFDB04D" alt="Otsu" width="400" />
+  <br>
+  <sup><em>Método de Binarización Automática de Otsu</em></sup>
+</div>
+<br>
 
 * Umbral.
 * Umbral automático de Otsu.
@@ -82,7 +154,10 @@ Trabajos prácticos de la materia Visión Artificial (3679) - 2C 2025 - UNLaM.
 * Invariantes de Hu.
 * Práctica de detección de formas por medio de momentos.
 
-## Unidad 4 Machine learning
+---
+
+<a id="unidad-4"></a>
+## Unidad 4 - Machine Learning
 * Optimizador.
 * Data fitting.
 * Problemas generales de aprendizaje automático: regresión, clasificación, clustering.
@@ -93,13 +168,21 @@ Trabajos prácticos de la materia Visión Artificial (3679) - 2C 2025 - UNLaM.
 * Overfitting.
 * Responsible AI.
 * Clustering con K-means.
-* Clasificación: Naive bayesian, KNN, Decision tree, SVM.
+* Clasificación: Naive Bayesian, KNN, Decision Tree, SVM.
 * Práctica de entrenamiento de un clasificador de formas.
 * Organización de datos en tablas para entrenamiento supervisado.
 
-## Unidad 5 Filtros
+---
 
-![Convolución](https://instagram.fepa2-1.fna.fbcdn.net/v/t51.82787-15/730313101_17933055639337523_2484899987712056725_n.webp?_nc_cat=103&_nc_map=urlgen_bucketless&ig_cache_key=MzkzMzQwMjQwMTQyNTYwMjIxNw%3D%3D.3-ccb7-5&ccb=7-5&_nc_sid=58cdad&efg=eyJ2ZW5jb2RlX3RhZyI6IkZFRUQueHBpZHMuMTA4MC5zZHIucmVndWxhcl9waG90by5DMyJ9&_nc_ohc=RqFddKLNLx8Q7kNvwHrHBAU&_nc_oc=AdoxcRdWbWbbHM4zj3_DE4nsN4i5PjJ14DeUnMvgzVC4lyF-88Xs2VwgTMfpdCJr_b0TIwtNrTqy1oAEbi4te48x&_nc_ad=z-m&_nc_cid=0&_nc_zt=23&_nc_ht=instagram.fepa2-1.fna&_nc_gid=6osMJVsqOijoDcXI9OxbGw&_nc_ss=7a22e&_nc_ct=RQosPBUIFQIlBAAAAA&oh=00_AQQEeWjNfSdZSbrBPTmU2z50DwHYWJGynMK5EWzoUZkASg&oe=6AFDC69A)
+<a id="unidad-5"></a>
+## Unidad 5 - Filtros
+
+<div align="center">
+  <img src="https://instagram.fepa2-1.fna.fbcdn.net/v/t51.82787-15/730313101_17933055639337523_2484899987712056725_n.webp?_nc_cat=103&_nc_map=urlgen_bucketless&ig_cache_key=MzkzMzQwMjQwMTQyNTYwMjIxNw%3D%3D.3-ccb7-5&ccb=7-5&_nc_sid=58cdad&efg=eyJ2ZW5jb2RlX3RhZyI6IkZFRUQueHBpZHMuMTA4MC5zZHIucmVndWxhcl9waG90by5DMyJ9&_nc_ohc=RqFddKLNLx8Q7kNvwHrHBAU&_nc_oc=AdoxcRdWbWbbHM4zj3_DE4nsN4i5PjJ14DeUnMvgzVC4lyF-88Xs2VwgTMfpdCJr_b0TIwtNrTqy1oAEbi4te48x&_nc_ad=z-m&_nc_cid=0&_nc_zt=23&_nc_ht=instagram.fepa2-1.fna&_nc_gid=6osMJVsqOijoDcXI9OxbGw&_nc_ss=7a22e&_nc_ct=RQosPBUIFQIlBAAAAA&oh=00_AQQEeWjNfSdZSbrBPTmU2z50DwHYWJGynMK5EWzoUZkASg&oe=6AFDC69A" alt="Convolución" width="450" />
+  <br>
+  <sup><em>Operación de Convolución 2D con Kernels para Filtrado de Imágenes</em></sup>
+</div>
+<br>
 
 * Filtros espaciales.
 * Convolución de kernel.
@@ -112,11 +195,21 @@ Trabajos prácticos de la materia Visión Artificial (3679) - 2C 2025 - UNLaM.
 * Transformada de Hough: rectas, segmentos, circunferencias.
 * Deblur.
 
-## Unidad 6 Deep learning
+---
 
-![Arquitectura AlexNet](https://cdn.learnopencv.com/wp-content/uploads/2018/05/04100023/AlexNet-1.png)
+<a id="unidad-6"></a>
+## Unidad 6 - Deep Learning
 
-![YOLO](https://www.fiverr.com/pro_user3/develop-realtime-computer-vision-systems-with-opencv-and-yolo?context_referrer=tag_page&source=TagPage&ref_ctx_id=1474c99781f6410e9297b4e4899f9aa9&pckg_id=1&pos=17&imp_id=9876d804-b9fd-4393-89f0-c8b3d99b46df)
+<div align="center">
+  <img src="https://cdn.learnopencv.com/wp-content/uploads/2018/05/04100023/AlexNet-1.png" alt="Arquitectura AlexNet" width="500" />
+  <br>
+  <sup><em>Arquitectura de la Red Neuronal Convolucional AlexNet</em></sup>
+  <br><br>
+  <img src="https://www.fiverr.com/pro_user3/develop-realtime-computer-vision-systems-with-opencv-and-yolo?context_referrer=tag_page&source=TagPage&ref_ctx_id=1474c99781f6410e9297b4e4899f9aa9&pckg_id=1&pos=17&imp_id=9876d804-b9fd-4393-89f0-c8b3d99b46df" alt="YOLO" width="450" />
+  <br>
+  <sup><em>Detección de Objetos en Tiempo Real utilizando modelos YOLO</em></sup>
+</div>
+<br>
 
 * Capa convolucional.
 * CNN.
@@ -135,22 +228,42 @@ Trabajos prácticos de la materia Visión Artificial (3679) - 2C 2025 - UNLaM.
 * Práctica de uso de modelos para inferencia.
 * Entrenamiento de U-Net con imágenes médicas.
 
-## Unidad 7 Segmentación clásica
+---
 
-![Segmentación Watershed](https://opencv.org/wp-content/uploads/2026/01/Watershed-Segmentation-Using-OpenCV.jpg)
+<a id="unidad-7"></a>
+## Unidad 7 - Segmentación Clásica
+
+<div align="center">
+  <img src="https://opencv.org/wp-content/uploads/2026/01/Watershed-Segmentation-Using-OpenCV.jpg" alt="Segmentación Watershed" width="450" />
+  <br>
+  <sup><em>Algoritmo de Segmentación Watershed en OpenCV</em></sup>
+</div>
+<br>
 
 * Segmentación: por colores, semántica.
 * Algoritmo Watershed.
 * Algoritmo GrabCut.
 * Alpha Matting.
 
-## Unidad 8 Puntos singulares y descriptores
+---
 
-![Subpixel Accuracy](https://www.mitutoyo.com/webfoo/wp-content/uploads/89293712-213x600.png)
+<a id="unidad-8"></a>
+## Unidad 8 - Puntos Singulares y Descriptores
 
-![LBP](https://cesartroyasherdek.wordpress.com/wp-content/uploads/2016/02/lbp1.png)
-
-![Bag of Words](https://machinelearningmastery.com/llm-embeddings-vs-tf-idf-vs-bag-of-words-which-works-better-in-scikit-learn/)
+<div align="center">
+  <img src="https://www.mitutoyo.com/webfoo/wp-content/uploads/89293712-213x600.png" alt="Subpixel Accuracy" width="250" />
+  <br>
+  <sup><em>Precisión a nivel de Subpíxel en detección de bordes y esquinas</em></sup>
+  <br><br>
+  <img src="https://cesartroyasherdek.wordpress.com/wp-content/uploads/2016/02/lbp1.png" alt="LBP" width="400" />
+  <br>
+  <sup><em>Local Binary Patterns (LBP) para la extracción de textura</em></sup>
+  <br><br>
+  <img src="https://machinelearningmastery.com/llm-embeddings-vs-tf-idf-vs-bag-of-words-which-works-better-in-scikit-learn/" alt="Bag of Words" width="450" />
+  <br>
+  <sup><em>Enfoque Bag of Visual Words (BoW) en clasificación de escenas</em></sup>
+</div>
+<br>
 
 * Detección de puntos singulares (feature detection): FAST y otros algoritmos.
 * Subpixel accuracy.
@@ -172,7 +285,10 @@ Trabajos prácticos de la materia Visión Artificial (3679) - 2C 2025 - UNLaM.
 * Machine learning para la generación del diccionario de BoW.
 * Reconocimiento de escenas con BoW.
 
-## Unidad 9 Calibración de cámara
+---
+
+<a id="unidad-9"></a>
+## Unidad 9 - Calibración de Cámara
 * Modelo de cámara estenopeica (pinhole camera) y epipolar (fisheye lens).
 * Parámetros intrínsecos.
 * Distorsiones radiales y tangenciales: coeficientes.
@@ -180,7 +296,10 @@ Trabajos prácticos de la materia Visión Artificial (3679) - 2C 2025 - UNLaM.
 * Antidistorsión de imagen y de puntos singulares.
 * Estado del arte.
 
-## Unidad 10 Transformaciones geométricas
+---
+
+<a id="unidad-10"></a>
+## Unidad 10 - Transformaciones Geométricas
 * Cambio de tamaño.
 * Pirámides.
 * Recorte.
@@ -192,38 +311,79 @@ Trabajos prácticos de la materia Visión Artificial (3679) - 2C 2025 - UNLaM.
 * Espacios proyectivos.
 * Homografías.
 
-## Unidad 11 Métodos numéricos
+---
+
+<a id="unidad-11"></a>
+## Unidad 11 - Métodos Numéricos
 * M-estimators.
 * Minimización por Gauss Newton y Levenberg Marquardt.
 * Estimadores robustos.
 * Métodos robustos: RANSAC, LMEDS.
 * PROSAC y RHO para homografías.
 
-## Unidad 12 Reconocimiento de texto y códigos
+---
+
+<a id="unidad-12"></a>
+## Unidad 12 - Reconocimiento de Texto y Códigos
 * Detección y reconocimiento de texto.
 * Detección y reconocimiento de códigos QR y de barras.
 * ARUCO.
 * Realidad aumentada. 
 
-## Unidad 13 Análisis de movimiento
+---
 
-![Flujo Óptico](https://es.wikipedia.org/wiki/Flujo_%C3%B3ptico#/media/Archivo:Opticfloweg.png)
+<a id="unidad-13"></a>
+## Unidad 13 - Análisis de Movimiento
 
-![Background Subtraction](https://docs.opencv.org/4.13.0/Background_Subtraction_Tutorial_Scheme.png)
+<div align="center">
+  <img src="https://es.wikipedia.org/wiki/Flujo_%C3%B3ptico#/media/Archivo:Opticfloweg.png" alt="Flujo Óptico" width="400" />
+  <br>
+  <sup><em>Estimación de Vectores de Flujo Óptico en secuencias de video</em></sup>
+  <br><br>
+  <img src="https://docs.opencv.org/4.13.0/Background_Subtraction_Tutorial_Scheme.png" alt="Background Subtraction" width="450" />
+  <br>
+  <sup><em>Técnica de Sustracción de Fondo (Background Subtraction)</em></sup>
+</div>
+<br>
 
 * Flujo óptico.
 * Flujo óptico denso y disperso.
 * Tracking.
 * Background subtraction. 
 
-## Librerias necesarias 
-En la terminar ejecutar el/los comando/s
+---
 
-### OpenCV
-`pip install opencv-python`
+<a id="librerias-necesarias"></a>
+## 🛠️ Librerías Necesarias e Instalación
 
-### MediaPipe
-`pip install mediapipe`
+Para ejecutar los algoritmos y notebooks de este repositorio, instala las siguientes dependencias mediante `pip`:
 
-### Numpy
-`pip install numpy`
+```bash
+# OpenCV para procesamiento digital de imágenes
+pip install opencv-python
+
+# MediaPipe para detección de pose, rostro y seguimiento
+pip install mediapipe
+
+# NumPy para manipulación matricial y álgebra lineal
+pip install numpy
+```
+
+---
+
+<a id="estructura-del-proyecto"></a>
+## 📁 Estructura del Proyecto
+```text
+📦 VisionArtificial
+ ┣ 📂 Unidad_01_Introduccion
+ ┃ ┗ 📜 TP1_OpenCV.py
+ ┣ 📂 Unidad_02_Histogramas
+ ┃ ┗ 📜 TP2_Histogramas_Backprojection.py
+ ┣ 📂 Unidad_03_Imagenes_Binarias
+ ┃ ┗ 📜 TP3_Otsu_Contornos.py
+ ┣ 📂 Unidad_05_Filtros
+ ┃ ┗ 📜 TP5_Sobel_Canny_Hough.py
+ ┣ 📂 Unidad_06_Deep_Learning
+ ┃ ┗ 📜 TP6_YOLO_UNet.ipynb
+ ┗ 📜 README.md
+```
