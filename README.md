@@ -24,6 +24,16 @@ Trabajos prácticos de la materia Visión Artificial (3679) realizado en el Segu
 * Silvestri, Jorge Alejandro
 * Sinopoli, Alesio Esteban
 
+## 👥 Integrantes
+<div align="center">
+
+| Apellido/s | Nombre/s |
+| :--: | :--: |
+| Contreras | Agustin |
+| Povoli Olivera | Victor |
+| Sandoval Vasquez | Juan Leandro |
+| Simonetti | Gian Luca |
+
 ## Librerias necesarias 
 En la terminar ejecutar el/los comando/s
 
