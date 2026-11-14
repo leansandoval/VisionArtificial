@@ -1,6 +1,6 @@
 <div align="center">
   <h1>👁️ Visión Artificial</h1>
-  <p><em>Trabajos prácticos y desarrollo de algoritmos de procesamiento de imágenes y Visión Computacional (3679) - 2C 2025 - UNLaM.</em></p>
+  <p><em>Trabajos prácticos y desarrollo de algoritmos de procesamiento de imágenes de la materia Visión Artificial (3679) - 2C 2025 - UNLaM.</em></p>
 
   <!-- Badges -->
   <img src="https://img.shields.io/badge/Universidad-UNLaM-1F4F90?style=for-the-badge&logo=google-scholar&logoColor=white" alt="UNLaM" />
