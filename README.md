@@ -200,7 +200,7 @@
   <br>
   <sup><em>Arquitectura de la Red Neuronal Convolucional AlexNet</em></sup>
   <br><br>
-  <img src="https://www.fiverr.com/pro_user3/develop-realtime-computer-vision-systems-with-opencv-and-yolo?context_referrer=tag_page&source=TagPage&ref_ctx_id=1474c99781f6410e9297b4e4899f9aa9&pckg_id=1&pos=17&imp_id=9876d804-b9fd-4393-89f0-c8b3d99b46df" alt="YOLO" width="450" />
+  <img src="https://fiverr-res.cloudinary.com/images/q_auto,f_auto/gigs/496292351/original/e4b8d9051d6c5f92831b5886d258cc139be24b6d/develop-realtime-computer-vision-systems-with-opencv-and-yolo.png" alt="YOLO" width="450" />
   <br>
   <sup><em>Detección de Objetos en Tiempo Real utilizando modelos YOLO</em></sup>
 </div>
@@ -254,7 +254,7 @@
   <br>
   <sup><em>Local Binary Patterns (LBP) para la extracción de textura</em></sup>
   <br><br>
-  <img src="https://machinelearningmastery.com/llm-embeddings-vs-tf-idf-vs-bag-of-words-which-works-better-in-scikit-learn/" alt="Bag of Words" width="450" />
+  <img src="https://machinelearningmastery.com/wp-content/uploads/2026/02/mlm-chugani-llm-embeddings-vs-tf-idf-vs-bag-of-words-works-better-scikit-learn-feature.jpg" alt="Bag of Words" width="450" />
   <br>
   <sup><em>Enfoque Bag of Visual Words (BoW) en clasificación de escenas</em></sup>
 </div>
@@ -331,7 +331,7 @@
 ## Unidad 13 - Análisis de Movimiento
 
 <div align="center">
-  <img src="https://es.wikipedia.org/wiki/Flujo_%C3%B3ptico#/media/Archivo:Opticfloweg.png" alt="Flujo Óptico" width="400" />
+  <img src="https://upload.wikimedia.org/wikipedia/commons/5/55/Opticfloweg.png?utm_source=es.wikipedia.org&utm_campaign=imageinfo&utm_content=original" alt="Flujo Óptico" width="400" />
   <br>
   <sup><em>Estimación de Vectores de Flujo Óptico en secuencias de video</em></sup>
   <br><br>
