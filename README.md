@@ -348,21 +348,16 @@
 
 ---
 
-<a id="librerias-necesarias"></a>
-## 🛠️ Librerías Necesarias e Instalación
-
-Para ejecutar los algoritmos y notebooks de este repositorio, instala las siguientes dependencias mediante `pip`:
-
-```bash
-# OpenCV para procesamiento digital de imágenes
-pip install opencv-python
-
-# MediaPipe para detección de pose, rostro y seguimiento
-pip install mediapipe
-
-# NumPy para manipulación matricial y álgebra lineal
-pip install numpy
-```
+<a id="herramientas-utilizadas"></a>
+## 🛠️ Herramientas Utilizadas
+* **Python**: Lenguaje de programación principal empleado para el desarrollo de las prácticas de visión por computadora.
+* **OpenCV**: Biblioteca fundamental utilizada para la manipulación de imágenes, filtrado, extracción de contornos, calibración y transformaciones.
+* **MediaPipe**: Framework de Google empleado para el seguimiento en tiempo real de rostros, manos y estimación de pose.
+* **YOLO (Ultralytics)**: Modelo de Deep Learning aplicado para la detección, clasificación y segmentación de objetos en tiempo real.
+* **Numpy**: Biblioteca clave para el procesamiento numérico y la manipulación matricial de los arrays de imágenes.
+* **Matplotlib**: Herramienta utilizada para la visualización de histogramas, canales cromáticos y resultados finales.
+* **Visual Studio Code**: Entorno de desarrollo (IDE) utilizado para la codificación, organización y depuración de scripts.
+* **Jupyter Notebook / Google Colab**: Entornos interactivos utilizados para el prototipado rápido e inferencia de modelos.
 
 ---
 
