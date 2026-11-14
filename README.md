@@ -1,4 +1,4 @@
-<img width="537" height="650" alt="image" src="https://github.com/user-attachments/assets/64cb3ca3-349b-4444-96a7-e9829f80b796" /><img width="710" height="534" alt="image" src="https://github.com/user-attachments/assets/93314d6c-5936-4a3e-9704-ba3690c34c6f" /># Visión Artificial
+# Visión Artificial
 Trabajos prácticos de la materia Visión Artificial (3679) - 2C 2025 - UNLaM. 
 
 ## Información de la Asignatura
