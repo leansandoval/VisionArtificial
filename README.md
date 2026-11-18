@@ -79,11 +79,11 @@
 ## Unidad 1 - Introducción
 
 <div align="center">
-  <img src="https://i0.wp.com/ticsyformacion.com/wp-content/uploads/2025/07/vision-artificial_infografia.png?fit=1024%2C1536&ssl=1" alt="¿Qué es Visión Artificial?" width="400" />
+  <img width="700" alt="¿Qué es Visión Artificial?" src="https://github.com/user-attachments/assets/4ca8f1d0-94a6-4805-9c47-84c7ce43301a" />
   <br>
   <sup><em>Fundamentos y panorama general de la Visión Artificial</em></sup>
   <br><br>
-  <img src="https://www.edge-ai-vision.com/wp-content/uploads/2012/01/OpenCVIntroductionFigure1.jpg" alt="OpenCV" width="450" />
+  <img width="700" alt="OpenCV" src="https://github.com/user-attachments/assets/a3c4c2c5-4129-493a-b1a1-1bf13b8cd4aa" />
   <br>
   <sup><em>OpenCV: Librería principal para el procesamiento digital de imágenes</em></sup>
 </div>
@@ -101,15 +101,15 @@
 ## Unidad 2 - Histogramas
 
 <div align="center">
-  <img src="https://scontent.faep28-2.fna.fbcdn.net/v/t39.30808-6/514279220_766542952414250_312648435951411254_n.jpg?stp=dst-jpg_tt6&cstp=mx1605x1915&ctp=s1605x1915&_nc_cat=111&_nc_map=urlgen_bucketless&ccb=1-7&_nc_sid=127cfc&_nc_eui2=AeHJYMD9ZVJ5SQ0kJ9BlrmjpEhLegNOI4vQSEt6A04ji9OZupmB-jS_owFkBwbT4ZxAgcg9Uf5sUTeGoBmOnloF_&_nc_ohc=E5PFsU0w7-sQ7kNvwHlTtJ_&_nc_oc=AdpJUZrEihaq2CAjAK4Uw3cKXk5aiIw1aclJkQkpcSxLrEEycmPokdLiR9fP8epD2cIMivXqO4BxM9tDwSDAOQJS&_nc_zt=23&_nc_ht=scontent.faep28-2.fna&_nc_gid=-Fy_8dBl2Q0KXdIHl-wW9A&_nc_ss=7b2a8&oh=00_AQTHu5an3t-D-lY4m5X77BCxfsY3A3Q2Q-gZaGwp-AOz6A&oe=6AFDBB52" alt="Histograma - Parte I" width="400" />
+  <img width="700" alt="Histograma - Parte I" src="https://github.com/user-attachments/assets/1bd158ea-6bb7-436f-88a3-17c9eab9a58e" />
   <br>
   <sup><em>Distribución de intensidades de píxeles en imágenes de escala de grises</em></sup>
   <br><br>
-  <img src="https://scontent.faep28-1.fna.fbcdn.net/v/t39.30808-6/529021069_766542972414248_4281231643661865910_n.jpg?stp=dst-jpg_tt6&cstp=mx1605x1915&ctp=s1605x1915&_nc_cat=109&_nc_map=urlgen_bucketless&ccb=1-7&_nc_sid=127cfc&_nc_eui2=AeEGRKsE43nBVJVnb6a_MpH21HV6v5n1JIrUdXq_mfUkiqOY01mL5d2okIkJIWYox_Rq2UWEbVegdL5euv59VVDq&_nc_ohc=HHTHanDcomIQ7kNvwHWgMeM&_nc_oc=Adqw_y83cum1PByyaRYW70z_Z6PbUK1CW0XjgtRmEkuHFoB5Vczqw2qdA7YdT0PuyFhc5eQinm9okWw27X-qCEq7&_nc_zt=23&_nc_ht=scontent.faep28-1.fna&_nc_gid=zCDFG8Iq1X_HqjcHV1vHmA&_nc_ss=7b2a8&oh=00_AQQ_sqMCog1npyxmY8YWVlpwwmO71tA5Ig2VKLsu60iRVg&oe=6AFD97CD" alt="Histograma - Parte II" width="400" />
+  <img width="700" alt="Histograma - Parte II" src="https://github.com/user-attachments/assets/c8261363-0cbb-4276-9600-89bb79cbe8e9" />
   <br>
   <sup><em>Ecualización de Histograma para mejora de contraste</em></sup>
   <br><br>
-  <img src="https://cdn.shortpixel.ai/spai/w_512+q_lossy+ret_img+to_webp/howradiologyworks.com/wp-content/uploads/2020/11/FBP_800_1600.png" alt="Backprojection" width="450" />
+  <img width="700" alt="Backprojection" src="https://github.com/user-attachments/assets/b3e60a30-de80-4b96-9d49-bf54ae33f60a" />
   <br>
   <sup><em>Técnica de Histograma Backprojection para segmentación de regiones</em></sup>
 </div>
@@ -126,11 +126,11 @@
 ## Unidad 3 - Imágenes Binarias
 
 <div align="center">
-  <img src="https://www.redalyc.org/journal/5537/553770380006/2145-8456-uisi-20-02-65-gf1.jpg" alt="Metodología de Umbralización" width="450" />
+  <img width="700" alt="Metodología de Umbralización" src="https://github.com/user-attachments/assets/b7e3e55f-882c-4c38-877e-3e8b7e62ed1c" />
   <br>
   <sup><em>Umbralización (Thresholding) en procesamiento digital de imágenes</em></sup>
   <br><br>
-  <img src="https://scontent.faep28-1.fna.fbcdn.net/v/t39.30808-6/480553758_2404708736540196_1058568074053299630_n.jpg?stp=dst-jpg_tt6&cstp=mx2048x2048&ctp=s2048x2048&_nc_cat=101&_nc_map=urlgen_bucketless&ccb=1-7&_nc_sid=127cfc&_nc_eui2=AeHKpw8z-IiVjpOZeysxOgNik6Oa4d5ygx6To5rh3nKDHsR-dLqvJI6c_gUVUkKS7O_DbBRZ0R3pSsBQGwezFGPu&_nc_ohc=XgseUZtPxCQQ7kNvwHiACvF&_nc_oc=AdrMFCcW-dnUJbLoq4H7DOZI1YA_w4ZS_kgu4vkKSFKjTOuvac739BXiLYML5RRxErvbB_sWjOl5dE2N8z9jfpQl&_nc_zt=23&_nc_ht=scontent.faep28-1.fna&_nc_gid=rKiAcAmu-zhU2JocCT9DQg&_nc_ss=7b2a8&oh=00_AQTPVP8RJX6_pvWlpn3bb9MCsDfda1TZHdTFDEya9SolJQ&oe=6AFDB04D" alt="Otsu" width="400" />
+  <img width="700" alt="Otsu" src="https://github.com/user-attachments/assets/b3a7ccf0-85bf-4705-941c-dece1ef60a18" />
   <br>
   <sup><em>Método de Binarización Automática de Otsu</em></sup>
 </div>
@@ -173,7 +173,7 @@
 ## Unidad 5 - Filtros
 
 <div align="center">
-  <img src="https://instagram.fepa2-1.fna.fbcdn.net/v/t51.82787-15/730313101_17933055639337523_2484899987712056725_n.webp?_nc_cat=103&_nc_map=urlgen_bucketless&ig_cache_key=MzkzMzQwMjQwMTQyNTYwMjIxNw%3D%3D.3-ccb7-5&ccb=7-5&_nc_sid=58cdad&efg=eyJ2ZW5jb2RlX3RhZyI6IkZFRUQueHBpZHMuMTA4MC5zZHIucmVndWxhcl9waG90by5DMyJ9&_nc_ohc=RqFddKLNLx8Q7kNvwHrHBAU&_nc_oc=AdoxcRdWbWbbHM4zj3_DE4nsN4i5PjJ14DeUnMvgzVC4lyF-88Xs2VwgTMfpdCJr_b0TIwtNrTqy1oAEbi4te48x&_nc_ad=z-m&_nc_cid=0&_nc_zt=23&_nc_ht=instagram.fepa2-1.fna&_nc_gid=6osMJVsqOijoDcXI9OxbGw&_nc_ss=7a22e&_nc_ct=RQosPBUIFQIlBAAAAA&oh=00_AQQEeWjNfSdZSbrBPTmU2z50DwHYWJGynMK5EWzoUZkASg&oe=6AFDC69A" alt="Convolución" width="450" />
+  <img width="700" alt="Convolución" src="https://github.com/user-attachments/assets/b4076621-8706-4f41-aa3c-49885254b010" />
   <br>
   <sup><em>Operación de Convolución 2D con Kernels para Filtrado de Imágenes</em></sup>
 </div>
@@ -196,11 +196,11 @@
 ## Unidad 6 - Deep Learning
 
 <div align="center">
-  <img src="https://cdn.learnopencv.com/wp-content/uploads/2018/05/04100023/AlexNet-1.png" alt="Arquitectura AlexNet" width="500" />
+  <img width="700" alt="Arquitectura AlexNet" src="https://github.com/user-attachments/assets/97214d15-6308-4f3c-8e39-8b9bf56c6095" />
   <br>
   <sup><em>Arquitectura de la Red Neuronal Convolucional AlexNet</em></sup>
   <br><br>
-  <img src="https://fiverr-res.cloudinary.com/images/q_auto,f_auto/gigs/496292351/original/e4b8d9051d6c5f92831b5886d258cc139be24b6d/develop-realtime-computer-vision-systems-with-opencv-and-yolo.png" alt="YOLO" width="450" />
+  <img width="700" alt="YOLO" src="https://github.com/user-attachments/assets/11759f1d-a4aa-4f18-877a-b78827db555a" />
   <br>
   <sup><em>Detección de Objetos en Tiempo Real utilizando modelos YOLO</em></sup>
 </div>
@@ -229,7 +229,7 @@
 ## Unidad 7 - Segmentación Clásica
 
 <div align="center">
-  <img src="https://opencv.org/wp-content/uploads/2026/01/Watershed-Segmentation-Using-OpenCV.jpg" alt="Segmentación Watershed" width="450" />
+  <img width="700" alt="Segmentación Watershed" src="https://github.com/user-attachments/assets/0bcce905-f567-459d-82a3-fff2885e6e6d" />
   <br>
   <sup><em>Algoritmo de Segmentación Watershed en OpenCV</em></sup>
 </div>
@@ -246,15 +246,15 @@
 ## Unidad 8 - Puntos Singulares y Descriptores
 
 <div align="center">
-  <img src="https://www.mitutoyo.com/webfoo/wp-content/uploads/89293712-213x600.png" alt="Subpixel Accuracy" width="250" />
+  <img width="700" alt="Subpixel Accuracy" src="https://github.com/user-attachments/assets/21e386ad-80e5-4be3-9baa-45d856356ee9" />
   <br>
   <sup><em>Precisión a nivel de Subpíxel en detección de bordes y esquinas</em></sup>
   <br><br>
-  <img src="https://cesartroyasherdek.wordpress.com/wp-content/uploads/2016/02/lbp1.png" alt="LBP" width="400" />
+  <img width="700" alt="LBP" src="https://github.com/user-attachments/assets/a3062281-8624-46f4-a142-096d141646a7" />
   <br>
   <sup><em>Local Binary Patterns (LBP) para la extracción de textura</em></sup>
   <br><br>
-  <img src="https://machinelearningmastery.com/wp-content/uploads/2026/02/mlm-chugani-llm-embeddings-vs-tf-idf-vs-bag-of-words-works-better-scikit-learn-feature.jpg" alt="Bag of Words" width="450" />
+  <img width="700" alt="Bag of Words" src="https://github.com/user-attachments/assets/a7e785e6-39fc-45f5-8542-f40a1a3f3a74" />
   <br>
   <sup><em>Enfoque Bag of Visual Words (BoW) en clasificación de escenas</em></sup>
 </div>
@@ -331,11 +331,11 @@
 ## Unidad 13 - Análisis de Movimiento
 
 <div align="center">
-  <img src="https://upload.wikimedia.org/wikipedia/commons/5/55/Opticfloweg.png?utm_source=es.wikipedia.org&utm_campaign=imageinfo&utm_content=original" alt="Flujo Óptico" width="400" />
+  <img width="700" alt="Flujo Óptico" src="https://github.com/user-attachments/assets/5d1b1000-5c0e-4025-93a3-8fd06418f6f3" />
   <br>
   <sup><em>Estimación de Vectores de Flujo Óptico en secuencias de video</em></sup>
   <br><br>
-  <img src="https://docs.opencv.org/4.13.0/Background_Subtraction_Tutorial_Scheme.png" alt="Background Subtraction" width="450" />
+  <img width="700" alt="Background Subtraction" src="https://github.com/user-attachments/assets/5d67464a-98ad-410e-bc21-e04d4d2a61f5" />
   <br>
   <sup><em>Técnica de Sustracción de Fondo (Background Subtraction)</em></sup>
 </div>
