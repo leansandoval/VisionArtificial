@@ -44,7 +44,7 @@
 * **Grupo**: 4
 
 <a id="trayecto"></a>
-## 👨‍💻 Trayecto - Gestión y Complementarias
+## ⚙️ Trayecto - Gestión y Complementarias
 * **Año académico**: Quinto Año - Segundo Cuatrimestre
 * **Responsable / Jefe de cátedra**: Silvestri, Jorge Alejandro
 * **Carga horaria semanal**: 4 hs
