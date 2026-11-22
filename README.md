@@ -306,6 +306,18 @@
 
 <a id="unidad-9"></a>
 ## Unidad 9 - Calibración de Cámara
+
+<div align="center">
+  <img width=700" alt="Patrón de Calibración de Cámara" src="https://github.com/user-attachments/assets/c9c3f149-b373-4ba5-ab62-a39ab6fcedaa" />
+  <br>
+  <sup><em>Patrón de Calibración de Cámara</em></sup>
+  <br><br>
+  <img width="700" alt="Distorciones" src="https://github.com/user-attachments/assets/90390238-d3b8-4a69-b5dc-48c034fac2ec" />
+  <br>
+  <sup><em>Distorciones</em></sup>
+</div>
+<br>
+
 * Modelo de cámara
   * Estenopeica (Pinhole Camera).
   * Epipolar (Fisheye Lens).
