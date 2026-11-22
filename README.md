@@ -194,6 +194,10 @@
   <img width="700" alt="Convolución" src="https://github.com/user-attachments/assets/b4076621-8706-4f41-aa3c-49885254b010" />
   <br>
   <sup><em>Operación de Convolución 2D con Kernels para Filtrado de Imágenes</em></sup>
+  <br><br>
+  <img width="700" alt="Convolución de Imagenes" src="https://github.com/user-attachments/assets/30161772-3884-48e0-bcea-676361912a1c" />
+  <br>
+  <sup><em>Convolución de Imagenes</em></sup>
 </div>
 <br>
 
