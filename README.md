@@ -153,17 +153,35 @@
 
 <a id="unidad-4"></a>
 ## Unidad 4 - Machine Learning
+
+<div align="center">
+  <img width="700" alt="Algoritmos de ML" src="https://github.com/user-attachments/assets/57fdb474-5550-4157-8aee-8bead222b98e" />
+  <br>
+  <sup><em>Algoritmos de ML</em></sup>
+  <br><br>
+  <img width="700" alt="Regresión vs K-Means" src="https://github.com/user-attachments/assets/5b4962d0-3383-4114-af53-053fec3396b5" />
+  <br>
+  <sup><em>Regresión vs K-Means</em></sup>
+</div>
+<br>
+
 * Optimizador.
 * Data fitting.
-* Problemas generales de aprendizaje automático: regresión, clasificación, clustering.
+* Problemas generales de aprendizaje automático
+  * Regresión.
+  * Clasificación.
+    * Naive Bayesian.
+    * KNN.
+    * Decision Tree.
+    * SVM.
+  * Clustering.
+    * K-means.
 * Escalares y etiquetas.
 * Muestras: vector de características.
 * Entrenamiento supervisado.
 * Outliers.
 * Overfitting.
 * Responsible AI.
-* Clustering con K-means.
-* Clasificación: Naive Bayesian, KNN, Decision Tree, SVM.
 * Práctica de entrenamiento de un clasificador de formas.
 * Organización de datos en tablas para entrenamiento supervisado.
 
@@ -284,7 +302,9 @@
 
 <a id="unidad-9"></a>
 ## Unidad 9 - Calibración de Cámara
-* Modelo de cámara estenopeica (pinhole camera) y epipolar (fisheye lens).
+* Modelo de cámara
+  * Estenopeica (Pinhole Camera).
+  * Epipolar (Fisheye Lens).
 * Parámetros intrínsecos.
 * Distorsiones radiales y tangenciales: coeficientes.
 * Calibración de cámara.
@@ -295,11 +315,27 @@
 
 <a id="unidad-10"></a>
 ## Unidad 10 - Transformaciones Geométricas
+
+<div align="center">
+  <img width="700" alt="Ejemplos de Transformaciones 2D" src="https://github.com/user-attachments/assets/fea24dd8-c546-4d5b-a6d9-7033d46d899b" />
+  <br>
+  <sup><em>Ejemplos de Transformaciones 2D</em></sup>
+  <br><br>
+  <img width="700" alt="Transformaciones Geométricas" src="https://github.com/user-attachments/assets/c805ec45-1d59-4753-80a6-2bc049d96162" />
+  <br>
+  <sup><em>Transformaciones Geométricas</em></sup>
+</div>
+<br>
+
 * Cambio de tamaño.
 * Pirámides.
 * Recorte.
 * Mapeo y warp.
-* Transformaciones 2D: traslación, escala, rotación, transformación afín.
+* Transformaciones 2D
+  * Traslación.
+  * Escala.
+  * Rotación
+  * Transformación afín.
 * Geometría proyectiva.
 * Transformación afín y de perspectiva.
 * Coordenadas homogéneas.
@@ -310,18 +346,32 @@
 
 <a id="unidad-11"></a>
 ## Unidad 11 - Métodos Numéricos
+
+<div align="center">
+  <img width="700" alt="Algoritmos de estimación robusta" src="https://github.com/user-attachments/assets/8d024fc7-40f4-4122-a49c-926055644e25" />
+  <br>
+  <sup><em>Algoritmos de estimación robusta</em></sup>
+</div>
+<br>
+
 * M-estimators.
-* Minimización por Gauss Newton y Levenberg Marquardt.
+* Minimización
+  * Gauss Newton.
+  * Levenberg Marquardt.
 * Estimadores robustos.
-* Métodos robustos: RANSAC, LMEDS.
+* Métodos robustos
+  * RANSAC.
+  * LMEDS.
 * PROSAC y RHO para homografías.
 
 ---
 
 <a id="unidad-12"></a>
 ## Unidad 12 - Reconocimiento de Texto y Códigos
-* Detección y reconocimiento de texto.
-* Detección y reconocimiento de códigos QR y de barras.
+* Detección y reconocimiento.
+  * Texto.
+  * Códigos QR.
+  * Códigos de barras.
 * ARUCO.
 * Realidad aumentada. 
 
@@ -342,7 +392,8 @@
 <br>
 
 * Flujo óptico.
-* Flujo óptico denso y disperso.
+  * Denso.
+  * Disperso.
 * Tracking.
 * Background subtraction. 
 
