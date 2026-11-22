@@ -372,6 +372,21 @@
 
 <a id="unidad-12"></a>
 ## Unidad 12 - Reconocimiento de Texto y Códigos
+
+<div align="center">
+  <img width="700" alt="Estructura de un QR" src="https://github.com/user-attachments/assets/d9aebdca-cbe7-4a62-83a0-444f001d35ad" />
+  <br>
+  <sup><em>Estructura de un QR</em></sup>
+  <br><br>
+  <img width="700" alt="¿Como funciona el algoritmo de reconocimiento de código de barras?" src="https://github.com/user-attachments/assets/3f572d5d-77bf-415f-a55a-79ff2ddc303e" />
+  <br>
+  <sup><em>¿Como funciona el algoritmo de reconocimiento de código de barras?</em></sup>
+</div>
+<br>
+
+
+
+
 * Detección y reconocimiento.
   * Texto.
   * Códigos QR.
